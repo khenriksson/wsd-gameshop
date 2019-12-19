@@ -15,19 +15,20 @@ The work is done by the students mentioned, who are committed to creating a webs
 
 # General description
 
-### Features to be implemented
+## Features to be implemented
 
-We plan to implement all the necessary and mandatory 
+We plan to implement all the necessary and mandatory first of all, and then move on the extra ones in case time lets us.
 
-#### Mandatory features and models
+### Mandatory features and models
+***
 
-##### Authentication
+#### Authentication
 Both players and developers need to be able to register to the service, and thereafter login or logout of it, using Djanguo auth.
 **Implementation order and listed features:**
 + Register
 + Login and logout
 
-##### Basic player and developer functionalities
+#### Basic player and developer functionalities
 Players can buy games through a payment service handled by the course mockup service [Tilkkutakki](https://tilkkutakki.cs.aalto.fi/payments/ ). They're also able to play games, and **only** games they've purschased. There needs to be a simple category for games, as well as a search function.
 
 Developers can add games, set prices for and manage that game, that is to be some kind of administrator of their own games. They have their own game inventory with sales statistics, showing how much money they've made from all games and also individually by game. They can **only** modify their own games. 
@@ -65,7 +66,7 @@ class GameAccess(models.Model):
 + Security issus
 + Statistics for developers
 
-##### Game/service interaction
+#### Game/service interaction
 Scores are recorded to the player's scores and to the global high score for the game list. Messages from the service to the game must be implemented as well. 
 
 The game model needs an own ID, as well as the owner user, and showing how many times it has been purschased. We do feel that integer is enough for now, even though it might go over 16 bits.
@@ -82,51 +83,54 @@ class Game(models.Model):
 **Implementation order and listed features:**
 + Recording scores implemented after or concurrently with adding games
 
-##### Quality of Work
+#### Quality of Work
 The code is to be commented well and according to the DRY-principle. Testing happens before and after merges, to make sure the code works as planned. The code is to be understood by anyone who wants to read it.
 
-#####  Non-functional requirements
+####  Non-functional requirements
 The project needs to have a full final project testament, with information on the most important features, and the project demo is to be perfect. This project is a team effort.
 
-#### Extra features
+### Extra features
+***
 
 *These are features, that if time allows, then we'll implement them.*
 
-##### 3rd party login
+#### 3rd party login
 We want it to be possible for players to login through Facebook, according for example to this [link](https://scotch.io/tutorials/django-authentication-with-facebook-instagram-and-linkedin "Django Authentication with Facebook").
 
-##### Social media sharing
+#### Social media sharing
 Players/developers could be able to share the media to Twitter, with a link to the game.
 
-##### Tags
+#### Tags
 Developers could get tags based on how much their games are played or used, such as "Popular game developer" or similar. 
 
-##### In-game transactions
+#### In-game transactions
 Transactions while playing games, for example to win the game or earn an advantage.
 
 ### Views
+***
 
-##### Register
+#### Register
 As with the implementation order for the models, registering is probably the first view we need to implement. This register function needs to POST the information gathered from the registration form, and check if it's valid. Whether it's valid, we need to save the user and user information to the database. Some kind of check to see if it's successful is probably also needed, as there might happen changes on the way that interfere with the saving. This relates to the user models showed earlier.  
 **Function features:**
 + POST and save user to database
 + Check if successful or unsuccessful, depending on if the form is valid as well
 
-##### Transaction
+#### Transaction
 The buy and wallet model needs a transaction feature that checks if the buy is successful, and also whether or not the user already owns the game.  
 **Function features:**
 + Buy game, some kind of POSTs to the service needed, also redirect to successful or unsuccessful purchase
 
-##### Add game
+#### Add game
 View for adding a game to the service. This probably also needs some kind of form that is POSTed to the database with games.  
 **Function features:**
 + POST and save form to database
 
-##### Edit game
+#### Edit game  
 **Function features:**
 + Changing info for the game, GETting it and POST the new information to the server
 
 ### Forms
+***
 
 We are planning on creating forms at least for registering a user and publishing a game. Registering needs to containt information on user email, their chosen username, first and last name.
 
@@ -134,7 +138,7 @@ We are planning on creating forms at least for registering a user and publishing
 
 The team plans to meet up regularly, once a week, to code as well as get up to date with what has happened since last time.
 
-### Implementation order and timetable
+## Implementation order and timetable
 
 As this project plan has been approved, we'll start by implementing the models and then move on to the views. The second most important objective is to get a functional test environment for html up, so that we can start implementing visible changes as fast as possible.
 
