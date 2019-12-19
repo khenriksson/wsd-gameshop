@@ -49,6 +49,15 @@ class Wallet(models.Model):
     owner = models.ForeignKey('User', ...)
 ```
 
+```
+class Payment(models.Model):
+    pay_id = models.CharField(max_length=32)
+    pay_amount = FloatField()
+    pay_buyer = ForeignKey('User',...)
+    pay_seller = ForeignKey('User',...)
+    pay_success = BooleanField()
+```
+
 As players are only allowed to play their own games and not others, we need a model implemented for the game access. Example:
 ```
 class GameAccess(models.Model):
