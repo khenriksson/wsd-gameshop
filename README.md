@@ -106,7 +106,7 @@ Transactions while playing games, for example to win the game or earn an advanta
 
 ### Views
 
-###### Register
+##### Register
 As with the implementation order for the models, registering is probably the first view we need to implement. This register function needs to POST the information gathered from the registration form, and check if it's valid. Whether it's valid, we need to save the user and user information to the database. Some kind of check to see if it's successful is probably also needed, as there might happen changes on the way that interfere with the saving. This relates to the user models showed earlier.
 **Function features:**
 + POST and save user to database
