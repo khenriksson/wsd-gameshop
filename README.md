@@ -107,18 +107,18 @@ Transactions while playing games, for example to win the game or earn an advanta
 ### Views
 
 ##### Register
-As with the implementation order for the models, registering is probably the first view we need to implement. This register function needs to POST the information gathered from the registration form, and check if it's valid. Whether it's valid, we need to save the user and user information to the database. Some kind of check to see if it's successful is probably also needed, as there might happen changes on the way that interfere with the saving. This relates to the user models showed earlier.
+As with the implementation order for the models, registering is probably the first view we need to implement. This register function needs to POST the information gathered from the registration form, and check if it's valid. Whether it's valid, we need to save the user and user information to the database. Some kind of check to see if it's successful is probably also needed, as there might happen changes on the way that interfere with the saving. This relates to the user models showed earlier.  
 **Function features:**
 + POST and save user to database
 + Check if successful or unsuccessful, depending on if the form is valid as well
 
 ##### Transaction
-The buy and wallet model needs a transaction feature that checks if the buy is successful, and also whether or not the user already owns the game.
+The buy and wallet model needs a transaction feature that checks if the buy is successful, and also whether or not the user already owns the game.  
 **Function features:**
 + Buy game, some kind of POSTs to the service needed, also redirect to successful or unsuccessful purchase
 
 ##### Add game
-View for adding a game to the service. This probably also needs some kind of form that is POSTed to the database with games.
+View for adding a game to the service. This probably also needs some kind of form that is POSTed to the database with games.  
 **Function features:**
 + POST and save form to database
 
