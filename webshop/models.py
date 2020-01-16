@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -11,3 +12,13 @@ class Game(models.Model):
     price = models.FloatField()
     def __str__(self):
         return self.game_id
+
+
+class User(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    username = models.CharField(max_length=40)
+    def __str__(self):
+        return self.username
