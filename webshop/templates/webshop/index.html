@@ -1,9 +1,15 @@
-<html>
-  <head>
-    <title>This is Hello World app!</title>
-  </head>
-  <body>
-    <h1>Welcome to Django</h1>
-    {% block content %} {% endblock %}
-  </body>
-</html>
+{% load static %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'webshop/style.css' %}"
+/>
+
+<ul>
+  {% for game in all_games %}
+  <div>
+    <li><a href="/webshop/{{game.id}}/"> {{game.game_id}}</a></li>
+  </div>
+  {% endfor %}
+</ul>

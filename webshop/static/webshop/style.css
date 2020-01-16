@@ -1,1 +1,11 @@
 /* Implement CSS here */
+
+li {
+  color: red;
+  margin: 10;
+}
+
+div {
+  width: 100px;
+  border: 15px solid green;
+}
