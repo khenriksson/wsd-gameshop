@@ -5,11 +5,12 @@
   type="text/css"
   href="{% static 'webshop/style.css' %}"
 />
+<div class="table">
+  <ul id="horizontal-list">
+    {% for game in all_games %}
 
-<ul>
-  {% for game in all_games %}
-  <div>
-    <li><a href="/webshop/{{game.id}}/"> {{game.game_id}}</a></li>
-  </div>
-  {% endfor %}
-</ul>
+    <li><a href="/webshop/{{game.id}}/"> {{game.game_title}}</a></li>
+
+    {% endfor %}
+  </ul>
+</div>

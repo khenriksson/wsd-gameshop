@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import loader
+
 from .models import Game
 
 # def webshop(request):
@@ -20,4 +21,8 @@ def webshop(request):
     return HttpResponse(template.render(context, request))
 
 def detail(request, game_id):
-    return HttpResponse("<h2>Details for game_id: " + str(game_id) + "</h2>")
+    try:
+        game = Game.objects.get(pk=game_id)
+    except Game.DoesNotExist:
+        raise Http404("Game does not exist")
+    return render(request, 'webshop/detail.html', {'game': game})
