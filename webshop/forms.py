@@ -12,7 +12,6 @@ class SignUpForm(UserCreationForm):
 
 class AddGameForm(forms.ModelForm):
     purchases = forms.IntegerField(widget=forms.HiddenInput(), initial='0', required=False)
-    #developer = forms.ForeignKey(User)
     game_url = forms.URLField(label='Your game URL',initial='http://', required=True)
     price = forms.FloatField(label='Game price', required=False)
     game_title = forms.CharField(label='Game name', max_length=50, required=True)

@@ -15,11 +15,7 @@
 
     <div class="collapse navbar-collapse" id="topNavBar">
       <ul class="nav navbar-nav navbar-left">
-        <li>
-          <a href="#">
-            <span>page 2</span>
-          </a>
-        </li>
+        
         <li>
           <a href="#">
             <span>page 3</span>
@@ -29,7 +25,11 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="">
             {% if user.is_authenticated %}
-            
+            <li>
+          <a href="/webshop/addgame/">
+            <span>Add Game</span>
+          </a>
+        </li>
      <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
      <li><a href="#"><span> {{ user.get_username }}</span></a></li> 
      {% else %}
@@ -60,5 +60,10 @@
     {% endfor %}
   </ul>
 </div>
-<a href="/webshop/signup/"> Signup</a>
-<a href="/webshop/addgame/"> Add Game</a>
+
+<footer class="footer">
+    <div class="navbar fixed-bottom">
+    <h5>Developed with love by the Kuuba team</h2>
+        </div>
+</footer>
+

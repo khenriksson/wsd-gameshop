@@ -25,12 +25,11 @@ ul#horizontal-list li {
   border: 5px solid;
   margin: 5px;
 }
-
-<<<<<<< HEAD
-=======
+body {
+  padding-bottom: 70px;
+}
 
 /*
->>>>>>> 418386475f8d63cb484fb3eb970a2a7aa8207e67
 .topnav {
   background-color: #fff;
   list-style-type: none;
