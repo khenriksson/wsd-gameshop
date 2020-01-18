@@ -25,3 +25,50 @@ ul#horizontal-list li {
   border: 5px solid;
   margin: 5px;
 }
+
+
+
+.topnav {
+  background-color: #fff;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 3px 0px 3px 0px;
+  border-color: #6f786a;
+}
+
+.topnav li {
+  display: inline-block;
+}
+
+.topnav li a {
+  text-decoration: none;
+  display: inline-block;
+  color: #c7c7c7;
+  padding: 15px 15px;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.topnav li.icon {
+  display: none;
+}
+
+nav {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 999;
+}
+
+nav li a:hover {
+  color: #000
+}
+
+.topnav li.now a {
+color: #6f786a;  
+}

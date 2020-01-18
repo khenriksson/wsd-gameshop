@@ -1,0 +1,29 @@
+{% load static %}
+
+<script>
+    function myFunction() {
+        var x = document.getElementById("Topnav");
+        if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+    x.className = "topnav";
+        }
+    }
+</script>
+<link
+rel="stylesheet"
+type="text/css"
+href="{% static 'webshop/style.css' %}"
+/>
+
+<nav>
+    <ul class="topnav" id="Topnav">
+            <li class="now"><a href="index.html">FRONTPAGE</a></li>
+            <li><a href="index.html">page2</a></li>
+            <li><a href="index.html">page3</a></li>
+            <li><a href="index.html">LOGIN/SIGNUP</a></li>
+            <li class="icon">
+                <a href="javascript:void(0);" onclick="myFunction()">&#9776;</a>
+            </li>
+    </ul>
+</nav>
