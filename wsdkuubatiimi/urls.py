@@ -15,12 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webshop.views import webshop, detail, signup,navigation
+from webshop.views import webshop, detail, signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webshop/', webshop, name='index'),
     path("webshop/<int:game_id>/", detail, name='detail'),
     path("webshop/signup/", signup, name='signup')
-    path('navigation/', navigation, name='navigation')
 ]

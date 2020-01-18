@@ -15,9 +15,6 @@ from .forms import SignUpForm
 #         html += '<a href="' + url + '">' + str(game.game_id) + '</a><br>'
 #      return HttpResponse(html)
 
-def navigation(request):
-        return render(request, 'webshop/navigation.html')
-
 
 def webshop(request):
     all_games = Game.objects.all()
