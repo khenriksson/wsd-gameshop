@@ -26,8 +26,6 @@ ul#horizontal-list li {
   margin: 5px;
 }
 
-
-
 .topnav {
   background-color: #fff;
   list-style-type: none;
@@ -66,9 +64,9 @@ nav {
 }
 
 nav li a:hover {
-  color: #000
+  color: #000;
 }
 
 .topnav li.now a {
-color: #6f786a;  
+  color: #6f786a;
 }

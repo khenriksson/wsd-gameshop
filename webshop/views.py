@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 
 from .models import Game
-from .forms import SignUpForm
+from .forms import SignUpForm, AddGameForm
 
 # def webshop(request):
 #      all_games = Game.objects.all()
@@ -47,4 +47,17 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'webshop/signup.html', {'form': form})
+
+def addgame(request):
+    game = Game()
+    if request.method == 'POST':
+        form = AddGameForm(request.POST)
+        if form.is_valid():
+            game = form.save(commit = False)
+            game.save()
+            return redirect('index')
+            
+    else:
+        form = AddGameForm()
+    return render(request, 'webshop/addgame.html', {'form': form})
         
