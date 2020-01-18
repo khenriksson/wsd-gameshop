@@ -1,5 +1,7 @@
 
-{% extends "base.html" %} {% block content %} {% if form.errors %}
+{% extends "base.html" %} {% block content %} 
+<div class="container">{% if form.errors %}
+
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %} {% if next %} {% if user.is_authenticated %}
 <p>
@@ -7,7 +9,7 @@
   an account that has access.
 </p>
 {% else %}
-<div class="container">
+
   <p>Please login to see this page.</p>
   {% endif %} {% endif %}
 

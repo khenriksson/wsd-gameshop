@@ -59,4 +59,7 @@ def addgame(request):
 def playgame(request):
     game = Game()
     return render(request, 'webshop/game.html')
+
+def profile(request):
+    return render(request, 'webshop/profile.html')
         

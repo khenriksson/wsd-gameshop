@@ -24,7 +24,7 @@
           </a>
         </li>
      <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
-     <li><a href="#"><span> {{ user.get_username }}</span></a></li> 
+     <li><a href="/webshop/profile/"><span> {{ user.get_username }}</span></a></li> 
      {% else %}
           <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
           <li><a href="{% url 'signup' %}">
