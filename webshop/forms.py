@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 from .models import Game
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(label='Username')
-        
+    username = forms.CharField(label='Username', required=True)
+    first_name = forms.CharField(label='First name', required=True)
+    last_name = forms.CharField(label='Last name', required=True)
+    email = forms.CharField(label="Email")
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 class AddGameForm(forms.ModelForm):
     purchases = forms.IntegerField(widget=forms.HiddenInput(), initial='0', required=False)
