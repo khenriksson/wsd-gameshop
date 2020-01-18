@@ -1,74 +1,51 @@
 /* Implement CSS here */
 
-li {
-  color: red;
-  margin: 10;
-}
-
-/* div {
-  width: 100px;
-  border: 15px solid green;
-} */
-
-.table {
-  display: table; /* Allow the centering to work */
-  margin: 0 auto;
-}
-
-ul#horizontal-list {
-  min-width: 696px;
-  list-style: none;
-  padding-top: 20px;
-}
-ul#horizontal-list li {
-  display: inline;
-  border: 5px solid;
-  margin: 5px;
-}
-body {
-  padding-bottom: 70px;
-}
-
-/*
-.topnav {
-  background-color: #fff;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  border-style: solid;
-  border-width: 3px 0px 3px 0px;
-  border-color: #6f786a;
-}
-
-.topnav li {
-  display: inline-block;
-}
-
-.topnav li a {
-  text-decoration: none;
-  display: inline-block;
-  color: #c7c7c7;
-  padding: 15px 15px;
-  font-size: 1.5em;
-  font-weight: 600;
-}
-
-
 nav {
   position: -webkit-sticky;
-  position: sticky;
+  position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
   z-index: 999;
 }
 
-nav li a:hover {
-  color: #000;
+html,
+body {
+  height: 100%;
 }
 
-.topnav li.now a {
-  color: #6f786a;
+#page-content {
+  flex: 1 0 auto;
 }
-*/
+
+#sticky-footer {
+  flex-shrink: none;
+}
+/* footer {
+  position: fixed;
+  height: 50px;
+  background-color: red;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
+} */
+
+#container{
+    min-height:100%;
+}
+
+#main {
+    overflow: auto;
+    padding-bottom: 100px;
+}
+
+#footer {
+    background-color: #333;
+    position: relative;
+    height: 50px;
+    margin-top: -50px;
+    clear: both;
+}
+
+/* Other Classes for Page Styling */
