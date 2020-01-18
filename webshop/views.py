@@ -55,4 +55,8 @@ def addgame(request):
     else:
         form = AddGameForm()
     return render(request, 'webshop/addgame.html', {'form': form})
+
+def playgame(request):
+    game = Game()
+    return render(request, 'webshop/game.html')
         
