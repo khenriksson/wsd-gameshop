@@ -28,7 +28,7 @@
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
       </button>
-      <a class="navbar-brand" href="index.html">GAMESHOP</a>
+      <a class="navbar-brand" href="{% url 'index' %}">GAMESHOP</a>
     </div>
 
     <div class="collapse navbar-collapse" id="topNavBar">
@@ -37,6 +37,8 @@
           <a href="#">
             <span>page 2</span>
           </a>
+        </li>
+        <li>
           <a href="#">
             <span>page 3</span>
           </a>
@@ -44,8 +46,13 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="">
+          <a href="#">
+            <span>Log in</span>
+          </a>
+        </li>
+        <li>
           <a href="{% url 'signup' %}">
-            <span>Login yms</span>
+            <span>Sign up</span>
           </a>
         </li>
       </ul>
