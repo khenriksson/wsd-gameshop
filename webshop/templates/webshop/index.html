@@ -1,32 +1,17 @@
 {% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'webshop/style.css' %}"/>
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{% static 'webshop/style.css' %}"
-/>
-
-<script>
-    function myFunction() {
-        var x = document.getElementById("Topnav");
-        if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-    x.className = "topnav";
-        }
-    }
-</script>
-
-<nav>
-    <ul class="topnav" id="Topnav">
-            <li class="now"><a href="index.html">FRONTPAGE</a></li>
-            <li><a href="index.html">page2</a></li>
-            <li><a href="index.html">page3</a></li>
-            <li><a href="signup.html">LOGIN/SIGNUP</a></li>
-            <li class="icon">
-                <a href="javascript:void(0);" onclick="myFunction()">&#9776;</a>
-            </li>
-    </ul>
+<nav class="navbar navbar-inverse">
+  <div class="container fluid">
+    <div class="navbar-header"><a href="index.html">GAMESHOP</a></li>
+    <div><a href="index.html">page2</a></div>
+    <div><a href="index.html">page3</a></div>
+    <div><a href="signup.html">LOGIN/SIGNUP</a></div>
+  </div>
 </nav>
 
 <div class="table">

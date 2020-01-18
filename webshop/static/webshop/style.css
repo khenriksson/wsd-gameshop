@@ -27,7 +27,7 @@ ul#horizontal-list li {
 }
 
 
-
+/*
 .topnav {
   background-color: #fff;
   list-style-type: none;
@@ -52,9 +52,6 @@ ul#horizontal-list li {
   font-weight: 600;
 }
 
-.topnav li.icon {
-  display: none;
-}
 
 nav {
   position: -webkit-sticky;
@@ -72,3 +69,4 @@ nav li a:hover {
 .topnav li.now a {
 color: #6f786a;  
 }
+*/
