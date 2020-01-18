@@ -24,6 +24,19 @@ class Game(models.Model):
     def __str__(self):
         return self.game_id
 
+
+
+class Game(models.Model):
+
+    game_id = models.CharField(max_length=16)
+    purchases = models.IntegerField()
+    #developer = models.ForeignKey(User, on_delete=models.CASCADE)
+    game_url = models.URLField()
+    price = models.FloatField()
+    game_title = models.CharField(max_length=50, default="Untitled")
+    def __str__(self):
+        return self.game_id
+
 class Wallet(models.Model):
     wallet_id = models.CharField(max_length=16, unique=True)  
     wallet_amount = models.FloatField(max_length=8)  
