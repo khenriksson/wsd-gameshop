@@ -37,7 +37,10 @@
 
   <body>
     <div id="container">
-      {% include "webshop/navigation.html" %} {% block content %} {% endblock %}
+      <div id="main">
+        {% include "webshop/navigation.html" %} {% block content %} 
+        {% endblock %}
+      </div>
     </div>
     {% include "webshop/footer.html" %}
   </body>
