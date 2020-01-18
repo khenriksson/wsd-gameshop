@@ -10,6 +10,9 @@ class User(models.Model):
         on_delete=models.CASCADE,
     )
     username = models.CharField(max_length=40)
+    first_name = models.CharField(max_length=30, default="")
+    last_name = models.CharField(max_length=30, default="")
+    email = models.EmailField(max_length=254)
     def __str__(self):
         return self.username
 
