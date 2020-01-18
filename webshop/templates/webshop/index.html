@@ -5,12 +5,20 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'webshop/style.css' %}"/>
 
+
+
 <nav class="navbar navbar-inverse">
   <div class="container fluid">
     <div class="navbar-header"><a href="index.html">GAMESHOP</a></li>
     <div><a href="index.html">page2</a></div>
     <div><a href="index.html">page3</a></div>
     <div><a href="signup.html">LOGIN/SIGNUP</a></div>
+    {% if user.is_authenticated %}
+     <li>User: {{ user.get_username }}</li>
+     <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
+   {% else %}
+     <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+   {% endif %} 
   </div>
 </nav>
 

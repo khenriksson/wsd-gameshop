@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from webshop.views import webshop, detail, signup, addgame
+from django.conf.urls import include
+from webshop.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,5 +24,5 @@ urlpatterns = [
     path("webshop/<int:game_id>/", detail, name='detail'),
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
-
+    path('webshop/accounts/', include('django.contrib.auth.urls')),
 ]
