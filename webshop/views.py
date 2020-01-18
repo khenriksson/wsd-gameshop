@@ -56,7 +56,7 @@ def addgame(request):
         form = AddGameForm()
     return render(request, 'webshop/addgame.html', {'form': form})
 
-def playgame(request):
-    game = Game()
-    return render(request, 'webshop/game.html')
+def gameplay(request):
+    #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
+    return render(request, 'webshop/gameplay.html')
         
