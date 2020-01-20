@@ -31,21 +31,21 @@ body {
   margin-bottom: 0px;
 } */
 
-#container{
-    min-height:100%;
+#container {
+  min-height: 100%;
 }
 
 #main {
-    overflow: auto;
-    padding-bottom: 100px;
+  overflow: auto;
+  padding-bottom: 100px;
 }
 
 #footer {
-    background-color: #333;
-    position: relative;
-    height: 50px;
-    margin-top: -50px;
-    clear: both;
+  background-color: #333;
+  position: relative;
+  height: 50px;
+  margin-top: -50px;
+  clear: both;
 }
 
 #iframe {
@@ -64,3 +64,6 @@ body {
 }
 
 /* Other Classes for Page Styling */
+.card-style  {
+  margin: 100;
+}
