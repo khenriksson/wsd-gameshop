@@ -1,3 +1,4 @@
 from django.test import TestCase
+from .models import User, Game
 
-# Create your tests here.
+# Insert tests

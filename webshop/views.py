@@ -39,17 +39,19 @@ def signup(request):
     
 
 def addgame(request):
-    game = Game()
-    if request.method == 'POST':
-        form = AddGameForm(request.POST)
-        if form.is_valid():
-            game = form.save(commit = False)
-            game.save()
-            return redirect('index')
+    if request.user.is_authenticated:
+        game = Game()
+        if request.method == 'POST':
+            form = AddGameForm(request.POST)
+            if form.is_valid():
+                game = form.save(commit = False)
+                game.save()
+                return redirect('index')
             
-    else:
-        form = AddGameForm()
-    return render(request, 'webshop/addgame.html', {'form': form})
+        else:
+            form = AddGameForm()
+        return render(request, 'webshop/addgame.html', {'form': form})
+    else: return redirect('index')
 
 def profile(request):
     return render(request, 'webshop/profile.html')
