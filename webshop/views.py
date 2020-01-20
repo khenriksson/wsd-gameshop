@@ -24,18 +24,20 @@ def detail(request, game_id):
     return render(request, 'webshop/detail.html', {'game': game})
 
 def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            send_email(request, user.email)
-            return redirect('index')
-            
-    else:
-        form = SignUpForm()
-    return render(request, 'webshop/signup.html', {'form': form})
+    if request.user.is_authenticated:
+        return redirect('index')
+    else: 
+        if request.method == 'POST':
+                form = SignUpForm(request.POST)
+                if form.is_valid():
+                    user = form.save()
+                    username = form.cleaned_data.get('username')
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    send_email(request, user.email)
+                    return redirect('index') 
+        else:
+            form = SignUpForm()
+        return render(request, 'webshop/signup.html', {'form': form})
     
 
 def addgame(request):
