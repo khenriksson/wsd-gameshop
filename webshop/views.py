@@ -3,18 +3,10 @@ from django.http import HttpResponse, Http404
 from django.template import loader
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import BadHeaderError, send_mail
 
-from .models import Game
+from .models import Game, User
 from .forms import SignUpForm, AddGameForm
-
-# def webshop(request):
-#      all_games = Game.objects.all()
-#      html = ''
-#      for game in all_games:
-#         url = '/webshop/' + str(game.id) + '/'
-#         html += '<a href="' + url + '">' + str(game.game_id) + '</a><br>'
-#      return HttpResponse(html)
-
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -38,10 +30,13 @@ def signup(request):
             user = form.save()
             username = form.cleaned_data.get('username')
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            send_email(request, user.email)
             return redirect('index')
+            
     else:
         form = SignUpForm()
     return render(request, 'webshop/signup.html', {'form': form})
+    
 
 def addgame(request):
     game = Game()
@@ -61,4 +56,25 @@ def profile(request):
 def gameplay(request):
     #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
     return render(request, 'webshop/gameplay.html')
+
+
+
+# A secure way of sending the registered emails
+def send_email(request, user_email):
+    try:
+        # No way to do header injections
+        subject = request.POST.get('subject', 'Welcome to Kuubatiimi Gameshop')
+        message = request.POST.get('message', 'Now go buy some games!')
+        from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
+        if subject and message and from_email:
+            try:
+                send_mail(subject, message, from_email, [user_email])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('index')
+        else:
+            return HttpResponse('Make sure all fields are entered and valid.')
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    
         
