@@ -10,22 +10,34 @@
       //Get data from sent message
       var data = evt.originalEvent.data;
       //Create a new list item based on the data
-      var newItem = '\n\t<li>' + (String(data.msg) || '') + '</li>';
-      //Add the item to the beginning of the actions list
-      $('#actions').prepend(newItem);
+      var newItem = String(data.msg)
+      // Clear actions: $('#actions').empty();
+      $('#actions').prepend('\n' + newItem);
+      //Add the item to actions
     });
   });
   </script>
-
-
 <div>
+
 <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>
+  {% if user.is_authenticated %} 
+  <!-- Not done - add 'if' to check if game has been bought--> 
   <div id="iframe">
     <h2>iframe</h2> 
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
-      <ul id="actions">
-      </ul>
+      <p id="actions">
+      </p>
   </div>
+  {% else %}
+  <div>
+    <p>Log in to buy and play the game :)</p>
+    <img
+        class="card-img-top"
+        src="{{game.picture_url}}"
+        alt="Card image cap"
+      />
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

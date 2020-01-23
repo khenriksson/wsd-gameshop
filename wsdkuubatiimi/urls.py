@@ -26,5 +26,5 @@ urlpatterns = [
     path("webshop/addgame/", addgame, name='addgame'),
     path('webshop/accounts/', include('django.contrib.auth.urls')),
     path('webshop/profile/', profile, name='profile'),
-    path('webshop/gameplay/', gameplay, name='gameplay'),
+    # Not needed anymore - path('webshop/gameplay/', gameplay, name='gameplay'),
 ]
