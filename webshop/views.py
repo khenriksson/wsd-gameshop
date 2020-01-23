@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import BadHeaderError, send_mail
+from django.db import transaction
+from hashlib import md5
 
 from .models import Game, User
 from .forms import SignUpForm, AddGameForm
@@ -61,6 +63,9 @@ def gameplay(request):
     #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
     return render(request, 'webshop/gameplay.html')
 
+def payment(request):
+    return render(request, 'webshop/payment.html')
+
 
 
 # A secure way of sending the registered emails
@@ -82,3 +87,16 @@ def send_email(request, user_email):
         raise Http404("User does not exist")
     
         
+@transaction.atomic
+def viewfunc(request, game):
+    # This code executes inside a transaction.
+    #game = get_object_or_404(Game, pk=request.game.id)
+    #price = game.price
+    buyer = get_object_or_404(User, pk=request.user)
+
+    sid = "veg4bGthc3Blcg=="
+    pid = "x5wmEqhw32FtTss"
+    secretkey = "rTBhR6kM8oDAkwfdIuPeHgN8_KIA"
+    checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+    return 

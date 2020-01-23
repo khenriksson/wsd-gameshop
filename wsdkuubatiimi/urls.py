@@ -27,4 +27,5 @@ urlpatterns = [
     path('webshop/accounts/', include('django.contrib.auth.urls')),
     path('webshop/profile/', profile, name='profile'),
     path('webshop/gameplay/', gameplay, name='gameplay'),
+    path('webshop/payment/', payment, name='payment')
 ]
