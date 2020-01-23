@@ -1,7 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
+
+  <script>
+  /* global $ */
+  $(document).ready(function() {
+    'use strict';
+    $(window).on('message', function(evt) {
+      //Note that messages from all origins are accepted
+      //Get data from sent message
+      var data = evt.originalEvent.data;
+      //Create a new list item based on the data
+      var newItem = '\n\t<li>' + (String(data.msg) || '') + '</li>';
+      //Add the item to the beginning of the actions list
+      $('#actions').prepend(newItem);
+    });
+  });
+  </script>
+
+
 <div>
-  <h2>This is the game id:</h2>
-  {{game}}
+<h2>Title: {{game.game_title}}</h2>
+  <h2>Game id: {{game.id}}</h2>
+  <div id="iframe">
+    <h2>iframe</h2> 
+    <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
+      <ul id="actions">
+      </ul>
+  </div>
 </div>
 {% endblock %}
