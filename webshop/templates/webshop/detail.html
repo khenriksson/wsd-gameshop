@@ -5,15 +5,30 @@
   /* global $ */
   $(document).ready(function() {
     'use strict';
-    $(window).on('message', function(evt) {
+    window.addEventListener('message', function(evt) {
       //Note that messages from all origins are accepted
       //Get data from sent message
-      var data = evt.originalEvent.data;
+      var data = evt.data;
       //Create a new list item based on the data
-      var newItem = String(data.msg)
-      // Clear actions: $('#actions').empty();
-      $('#actions').prepend('\n' + newItem);
-      //Add the item to actions
+      if (data.messageType == "SCORE") {
+        $('#score').empty();
+        $('#score').append(data.score);
+      };
+      if (data.messageType == "SAVE") {
+        var gameState = data.gameState;
+        $('#actions').empty();
+        $('#actions').append("Saved");
+      };
+      if (data.messageType == "LOAD_REQUEST") {
+        var message = {
+          messageType: "LOAD", gameState
+        };
+        var frame = document.getElementById('gameframe');
+        frame.contentWindow.postMessage(message, "*");
+        $('#actions').empty();
+        $('#actions').append("Loaded");
+      };
+      var newItem = String(data.messageType)
     });
   });
   </script>
@@ -21,13 +36,15 @@
 
 <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>
+  <h2>Player: {{user.username}}</h2>
   {% if user.is_authenticated %} 
   <!-- Not done - add 'if' to check if game has been bought--> 
   <div id="iframe">
     <h2>iframe</h2> 
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
-      <p id="actions">
-      </p>
+      <div>Score: <span id="score">0</span></div>
+      <div>Actions: <span id="actions"></span></div>
+  </div>
   </div>
   {% else %}
   <div>
