@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <script>
+<script>
   /* global $ */
-  $(document).ready(function() {
+  $(document).ready(function () {
     'use strict';
-    window.addEventListener('message', function(evt) {
+    window.addEventListener('message', function (evt) {
       //Note that messages from all origins are accepted
       //Get data from sent message
       var data = evt.data;
-      //Create a new list item based on the data
+      //var gameState = {};
+      if (data.messageType == "SETTING") {
+        $('iframe').width(data.options.width);
+        $('iframe').height(data.options.height);
+      };
       if (data.messageType == "SCORE") {
         $('#score').empty();
         $('#score').append(data.score);
@@ -18,8 +22,19 @@
         var gameState = data.gameState;
         $('#actions').empty();
         $('#actions').append("Saved");
+        //$('#actions').append(gameState);
       };
       if (data.messageType == "LOAD_REQUEST") {
+        /*if (NO SAVED GAMESTATE) {
+          $('#actions').empty();
+          $('#actions').append("No game state saved - could not load");
+        }
+        else {*/
+        // NOTE dummy data for testing load
+        var gameState = {
+          "playerItems": ['stone'],
+          "score": 50.0
+        };
         var message = {
           messageType: "LOAD", gameState
         };
@@ -27,34 +42,31 @@
         frame.contentWindow.postMessage(message, "*");
         $('#actions').empty();
         $('#actions').append("Loaded");
+        //}
       };
-      var newItem = String(data.messageType)
     });
   });
-  </script>
+
+</script>
+
 <div>
 
-<h2>Title: {{game.game_title}}</h2>
+  <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>
+  {% if user.is_authenticated %}
   <h2>Player: {{user.username}}</h2>
-  {% if user.is_authenticated %} 
-  <!-- Not done - add 'if' to check if game has been bought--> 
+  <!-- Not done - add 'if' to check if game has been bought-->
   <div id="iframe">
-    <h2>iframe</h2> 
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
-      <div>Score: <span id="score">0</span></div>
-      <div>Actions: <span id="actions"></span></div>
   </div>
-  </div>
-  {% else %}
-  <div>
-    <p>Log in to buy and play the game :)</p>
-    <img
-        class="card-img-top"
-        src="{{game.picture_url}}"
-        alt="Card image cap"
-      />
-  </div>
-  {% endif %}
+  <div>Score: <span id="score">0</span></div>
+  <div>Actions: <span id="actions"></span></div>
+</div>
+{% else %}
+<div>
+  <p>Log in to buy and play the game :)</p>
+  <img class="card-img-top" src="{{game.picture_url}}" alt="Card image cap" />
+</div>
+{% endif %}
 </div>
 {% endblock %}
