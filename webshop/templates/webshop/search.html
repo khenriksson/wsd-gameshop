@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+
+
+<div class="row">
+  {% for game in filtered_games %}
+  <div class="col-3">
+    <div class="card" style="width: 21rem;">
+      <img
+        class="card-img-top"
+        src="{{game.picture_url}}"
+        alt="Card image cap"
+      />
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="/webshop/{{game.id}}/"> {{game.game_title}}</a>
+        </h5>
+        <p class="card-text">
+          {{game.description}}
+        </p>
+        <a href="/webshop/{{game.id}}/" class="btn btn-primary">Go somewhere</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

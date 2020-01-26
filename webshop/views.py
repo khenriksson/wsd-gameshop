@@ -18,6 +18,23 @@ def webshop(request):
     }
     return HttpResponse(template.render(context, request))
 
+def search_games(request, search_text):
+    filtered_games = []
+    '''search_text = "test"'''
+    for game in Game.objects.all():
+        if search_text in game.game_title:
+            filtered_games.append(game)
+    template = loader.get_template('webshop/search.html')
+    context = {
+        'filtered_games': filtered_games,
+    }
+    if not filtered_games:
+        return render(request, 'webshop/wronggame.html', {'search_text': search_text})
+    else:
+        return HttpResponse(template.render(context, request))
+    
+
+
 def detail(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
