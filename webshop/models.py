@@ -36,4 +36,10 @@ class Wallet(models.Model):
     def __str__(self):
         return self.owner
 
+class GameStatus(models.Model):
+    gameID = models.IntegerField()
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameState = models.TextField()
+    highScore = models.IntegerField()
+
 

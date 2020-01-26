@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap4',
     'webshop',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
