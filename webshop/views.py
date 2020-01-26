@@ -59,9 +59,12 @@ def addgame(request):
 
 def profile(request):
     return render(request, 'webshop/profile.html')
-def gameplay(request):
+
+
+#def gameplay(request):
+#This method is not needed anymore - moved to detail
     #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
-    return render(request, 'webshop/gameplay.html')
+    #return render(request, 'webshop/gameplay.html')
 
 def payment(request):
     return render(request, 'webshop/payment.html')
