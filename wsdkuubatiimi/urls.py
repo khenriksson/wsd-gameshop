@@ -28,4 +28,5 @@ urlpatterns = [
     path('webshop/profile/', profile, name='profile'),
     path('webshop/payment/', payment, name='payment'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
+    path('webshop/edit_profile', edit_profile, name='edit_profile'),
 ]

@@ -6,9 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import BadHeaderError, send_mail
 from django.db import transaction
 from hashlib import md5
-
 from .models import Game, User
-from .forms import SignUpForm, AddGameForm
+from .forms import SignUpForm, AddGameForm, EditProfileForm
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -76,6 +75,26 @@ def addgame(request):
 
 def profile(request):
     return render(request, 'webshop/profile.html')
+
+def edit_profile(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+        if request.method == 'POST':
+            if form.is_valid():
+                user.first_name = request.POST['first_name']
+                user.last_name = request.POST['last_name']
+                user.email = request.POST['email']
+                user.save()
+                return redirect('profile')
+        context = {
+        "form": form
+        }
+        return render(request, 'webshop/edit_profile.html', context)
+    else:
+        return redirect('index')
+
+
 
 
 #def gameplay(request):
