@@ -1,0 +1,69 @@
+/* Implement CSS here */
+
+nav {
+  position: -webkit-sticky;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 999;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+#page-content {
+  flex: 1 0 auto;
+}
+
+#sticky-footer {
+  flex-shrink: none;
+}
+/* footer {
+  position: fixed;
+  height: 50px;
+  background-color: red;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
+} */
+
+#container {
+  min-height: 100%;
+}
+
+#main {
+  overflow: auto;
+  padding-bottom: 100px;
+}
+
+#footer {
+  background-color: #333;
+  position: relative;
+  height: 50px;
+  margin-top: -50px;
+  clear: both;
+}
+
+#iframe {
+  margin: auto;
+  width: 80%;
+}
+
+#gameframe {
+  width: 100%;
+  min-height: 500px;
+  /*padding-left: 80px;
+  height: relative;
+  margin-left: auto;
+  margin-right: auto;
+*/
+}
+
+/* Other Classes for Page Styling */
+.card-style  {
+  margin: 100;
+}
