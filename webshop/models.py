@@ -48,4 +48,10 @@ class Transaction(models.Model):
     def __str__(self):
         return (self.buyer, self.game)
 
+class GameStatus(models.Model):
+    gameID = models.IntegerField()
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameState = models.TextField()
+    highScore = models.IntegerField()
+
 

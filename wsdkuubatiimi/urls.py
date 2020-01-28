@@ -31,4 +31,6 @@ urlpatterns = [
 
     #url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
      #   views.activate, name='activate'),
+    path('webshop/search/<str:search_text>', search_games, name='search'),
+    path('webshop/edit_profile', edit_profile, name='edit_profile'),
 ]

@@ -12,10 +12,15 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from hashlib import md5
+<<<<<<< HEAD
 from urllib.parse import urlencode
 
 from .models import Game, User, Transaction
 from .forms import SignUpForm, AddGameForm
+=======
+from .models import Game, User
+from .forms import SignUpForm, AddGameForm, EditProfileForm
+>>>>>>> 7947cf080c0ed73d1f21316dec89140d0f6e77ab
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -24,6 +29,23 @@ def webshop(request):
         'all_games': all_games,
     }
     return HttpResponse(template.render(context, request))
+
+def search_games(request, search_text):
+    filtered_games = []
+    '''search_text = "test"'''
+    for game in Game.objects.all():
+        if search_text in game.game_title:
+            filtered_games.append(game)
+    template = loader.get_template('webshop/search.html')
+    context = {
+        'filtered_games': filtered_games,
+    }
+    if not filtered_games:
+        return render(request, 'webshop/wronggame.html', {'search_text': search_text})
+    else:
+        return HttpResponse(template.render(context, request))
+    
+
 
 def detail(request, game_id):
     try:
@@ -79,6 +101,26 @@ def addgame(request):
 
 def profile(request):
     return render(request, 'webshop/profile.html')
+
+def edit_profile(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+        if request.method == 'POST':
+            if form.is_valid():
+                user.first_name = request.POST['first_name']
+                user.last_name = request.POST['last_name']
+                user.email = request.POST['email']
+                user.save()
+                return redirect('profile')
+        context = {
+        "form": form
+        }
+        return render(request, 'webshop/edit_profile.html', context)
+    else:
+        return redirect('index')
+
+
 
 
 #def gameplay(request):

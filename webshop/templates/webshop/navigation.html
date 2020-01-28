@@ -1,9 +1,7 @@
 <script>
 var searchClick = function() {
     var text = document.getElementById("navbar-form").value;
-    console.log(text);
-    // placeholder link - need to add new view of filtered results
-    window.location.href = "http://127.0.0.1:8000/webshop/1/";
+    window.location.href = "/webshop/search/" + text;
 }
 </script>
 

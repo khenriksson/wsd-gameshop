@@ -5,6 +5,7 @@
    <li>Email: {{ user.email }}</li>
    <li>First Name: {{ user.first_name }}</li>
    <li>Last Name: {{ user.last_name }}</li>
+   <li><a href="{% url 'edit_profile'%}">Edit profile</a></li>
 
    <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
    {% else %}
