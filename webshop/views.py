@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.template import loader
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import BadHeaderError, send_mail
 from django.db import transaction
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
 from hashlib import md5
+from urllib.parse import urlencode
 
-from .models import Game, User
+from .models import Game, User, Transaction
 from .forms import SignUpForm, AddGameForm
 
 def webshop(request):
@@ -33,10 +40,23 @@ def signup(request):
                 form = SignUpForm(request.POST)
                 if form.is_valid():
                     user = form.save()
-                    username = form.cleaned_data.get('username')
-                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                    send_email(request, user.email)
-                    return redirect('index') 
+                    # username = form.cleaned_data.get('username')
+                    #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    user.is_active = False
+                    user.save()
+                    current_site = get_current_site(request)
+                    # Sending the confirmation email
+                    subject = 'Activate your account.'
+                    message = render_to_string('webshop/activate_email.html', {
+                        'user': user,
+                        'domain': current_site.domain,
+                        'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token':account_activation_token.make_token(user),
+                    })
+                    send_email(request, user.email, subject, message)
+                    messages.success(request, ('Please Confirm your email to complete registration.'))
+                    return HttpResponse('Please confirm your email address to complete the registration')
+                    #redirect('index') 
         else:
             form = SignUpForm()
         return render(request, 'webshop/signup.html', {'form': form})
@@ -66,17 +86,14 @@ def profile(request):
     #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
     #return render(request, 'webshop/gameplay.html')
 
-def payment(request):
-    return render(request, 'webshop/payment.html')
-
 
 
 # A secure way of sending the registered emails
-def send_email(request, user_email):
+def send_email(request, user_email, subject, message):
     try:
         # No way to do header injections
-        subject = request.POST.get('subject', 'Welcome to Kuubatiimi Gameshop')
-        message = request.POST.get('message', 'Now go buy some games!')
+        subject = request.POST.get('subject', subject)
+        message = request.POST.get('message', message)
         from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
         if subject and message and from_email:
             try:
@@ -89,17 +106,47 @@ def send_email(request, user_email):
     except User.DoesNotExist:
         raise Http404("User does not exist")
     
-        
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+#PAYMENT METHODS DOWN HERE
+
+# def payment(request):
+#     return render(request, 'webshop/payment.html')
+
 @transaction.atomic
-def viewfunc(request, game):
+def payment(request):
     # This code executes inside a transaction.
     #game = get_object_or_404(Game, pk=request.game.id)
     #price = game.price
-    buyer = get_object_or_404(User, pk=request.user)
+    # buyer = get_object_or_404(User, pk=request.user)
 
-    sid = "veg4bGthc3Blcg=="
-    pid = "x5wmEqhw32FtTss"
-    secretkey = "rTBhR6kM8oDAkwfdIuPeHgN8_KIA"
-    checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+    sid = "l1YLtkV4YW1wbGU="
+    pid = "payment1"
+    amount = "9.95"
+    secret = "1f08IXzzUNKUSye_5LTWy78t83wA"
+    checksumstr = "pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
     checksum = md5(checksumstr.encode('utf-8')).hexdigest()
-    return 
+    bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
+    print(checksum)
+    query = urlencode({
+        'pid': pid, 'sid': sid, 'amount': amount,
+        'checksum': checksum,
+        'success_url': 'http://localhost:8000/payment/success',
+        'cancel_url': 'http://localhost:8000/payment/cancel',
+        'error_url': 'http://localhost:8000/payment/error'})
+
+    return redirect(bankapi + '?' + query)

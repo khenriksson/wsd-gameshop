@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+import datetime
 # Create your models here.
 
 
@@ -35,5 +36,16 @@ class Wallet(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
     def __str__(self):
         return self.owner
+
+class Transaction(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
+    state = models.CharField(blank=True,max_length=20)
+    buy_started = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    buy_completed = models.DateTimeField(null=True)
+
+
+    def __str__(self):
+        return (self.buyer, self.game)
 
 

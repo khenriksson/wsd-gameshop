@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Helsinki'
 
 USE_I18N = True
 
@@ -124,4 +124,9 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/webshop/'
 #AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend')
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '0312464b1101aa'
+EMAIL_HOST_PASSWORD = '0b3a8c33a71c6e'
+EMAIL_PORT = '2525'

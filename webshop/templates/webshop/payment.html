@@ -1,29 +1,68 @@
 {% extends "base.html" %}{% block content %}
 
-<form
-  action="https://tilkkutakki.cs.aalto.fi/payments/pay?pid=x5wmEqhw32FtTss&sid=veg4bGthc3Blcg==&amount=9.95&checksum=4dcd406dca0a2fe61f38db186299f30d&success_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fsuccess&cancel_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fcancel&error_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Ferror"
-  method="POST"
->
-  <input type="hidden" name="pid" value="x5wmEqhw32FtTss" />
-  <input type="hidden" name="sid" value="veg4bGthc3Blcg==" />
-  <input type="hidden" name="amount" value="9.95" />
-  <input
-    type="hidden"
-    name="success_url"
-    value="http://localhost:8000/payment/success"
-  />
-  <input
-    type="hidden"
-    name="cancel_url"
-    value="http://localhost:8000/payment/cancel"
-  />
-  <input
-    type="hidden"
-    name="error_url"
-    value="http://localhost:8000/payment/error"
-  />
-  <input type="hidden" name="checksum" value="{}" />
+<!-- <form action="https://tilkkutakki.cs.aalto.fi/payments/pay?pid=payment1&sid=l1YLtkV4YW1wbGU%3D&amount=9.95&checksum=4dcd406dca0a2fe61f38db186299f30d&success_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fsuccess&cancel_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fcancel&error_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Ferror" method="POST">
+  <input type="hidden" name="pid" value="payment1">
+  <input type="hidden" name="sid" value="l1YLtkV4YW1wbGU=">
+  <input type="hidden" name="amount" value="9.95">
+  <input type="hidden" name="success_url" value="http://localhost:8000/payment/success">
+  <input type="hidden" name="cancel_url" value="http://localhost:8000/payment/cancel">
+  <input type="hidden" name="error_url" value="http://localhost:8000/payment/error">
+  <input type="hidden" name="checksum"value="4dcd406dca0a2fe61f38db186299f30d">
   Amount to be paid 9.95¤
-  <input type="submit" value="Pay" />
+  <input type="submit" value="Pay">
+</form>-->
+
+
+{% load staticfiles %}
+
+<script type="text/javascript"
+    src="{% static 'webshop/jquery-1.11.1.min.js' %}">
+</script>
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+    var pd = "{{post}}";
+    data = parseData(pd);
+    $('#inputPid').val(data['pid']);
+    $('#inputSid').val(data['sid']);
+    $('#inputSuccessUrl').val(data['success_url']);
+    $('#inputErrorUrl').val(data['error_url']);
+    $('#inputCancelUrl').val(data['cancel_url']);
+    $('#inputChecksum').val(data['checksum'])
+    $('#inputAmount').val(data['amount'])
+
+    $('#buyForm').submit();
+});
+function parseData(d)
+{
+    // Parse string into dictionary
+    var str = d.split('&amp;');
+    var dict = new Array();
+    for (var i = 0; i < str.length; i++)
+    {
+        // Split to key=value
+        sub = str[i].split('=');
+
+        if (sub[0].indexOf("_url") >= 0)
+            sub[1] = decodeURIComponent(sub[1]);
+
+        dict[sub[0]] = sub[1];
+    }
+    return dict
+}
+</script>
+
+<form id="buyForm" action="https://tilkkutakki.cs.aalto.fi/payments/pay" method="POST">
+    <input type="hidden" id="inputPid" name="pid" value="" />
+    <input type="hidden" id="inputSid" name="sid" value="" />
+    <input type="hidden" id="inputSuccessUrl" name="success_url" value="" />
+    <input type="hidden" id="inputCancelUrl" name="cancel_url" value="" />
+    <input type="hidden" id="inputErrorUrl" name="error_url" value="" />
+    <input type="hidden" id="inputChecksum" name="checksum" value="" />
+
+    <label hidden for="inputAmount">Amount</label>
+    <input hidden type="text" id="inputAmount" name="amount" value="5" />
+    <input hidden type="submit" value="Accept Payment"/>
 </form>
 {% endblock %}
