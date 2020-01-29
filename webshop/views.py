@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import BadHeaderError, send_mail
-
+from django.db import transaction
+from hashlib import md5
 from .models import Game, User
-from .forms import SignUpForm, AddGameForm
+from .forms import SignUpForm, AddGameForm, EditProfileForm
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -15,6 +16,23 @@ def webshop(request):
         'all_games': all_games,
     }
     return HttpResponse(template.render(context, request))
+
+def search_games(request, search_text):
+    filtered_games = []
+    '''search_text = "test"'''
+    for game in Game.objects.all():
+        if search_text in game.game_title:
+            filtered_games.append(game)
+    template = loader.get_template('webshop/search.html')
+    context = {
+        'filtered_games': filtered_games,
+    }
+    if not filtered_games:
+        return render(request, 'webshop/wronggame.html', {'search_text': search_text})
+    else:
+        return HttpResponse(template.render(context, request))
+    
+
 
 def detail(request, game_id):
     try:
@@ -57,9 +75,35 @@ def addgame(request):
 
 def profile(request):
     return render(request, 'webshop/profile.html')
-def gameplay(request):
+
+def edit_profile(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+        if request.method == 'POST':
+            if form.is_valid():
+                user.first_name = request.POST['first_name']
+                user.last_name = request.POST['last_name']
+                user.email = request.POST['email']
+                user.save()
+                return redirect('profile')
+        context = {
+        "form": form
+        }
+        return render(request, 'webshop/edit_profile.html', context)
+    else:
+        return redirect('index')
+
+
+
+
+#def gameplay(request):
+#This method is not needed anymore - moved to detail
     #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
-    return render(request, 'webshop/gameplay.html')
+    #return render(request, 'webshop/gameplay.html')
+
+def payment(request):
+    return render(request, 'webshop/payment.html')
 
 
 
@@ -82,3 +126,16 @@ def send_email(request, user_email):
         raise Http404("User does not exist")
     
         
+@transaction.atomic
+def viewfunc(request, game):
+    # This code executes inside a transaction.
+    #game = get_object_or_404(Game, pk=request.game.id)
+    #price = game.price
+    buyer = get_object_or_404(User, pk=request.user)
+
+    sid = "veg4bGthc3Blcg=="
+    pid = "x5wmEqhw32FtTss"
+    secretkey = "rTBhR6kM8oDAkwfdIuPeHgN8_KIA"
+    checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+    return 

@@ -1,0 +1,4 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<h2>No games matched your search: "{{search_text}}"</h2>
+<p>Try searching for another game or <a href="{% url 'index' %}">return to home page</a></p>
+{% endblock %}

@@ -25,8 +25,10 @@ urlpatterns = [
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
     path('webshop/accounts/', include('django.contrib.auth.urls')),
-    #path('webshop/accounts/', include('allauth.urls')),
+    path('webshop/accounts/', include('allauth.urls')),
     path('webshop/profile/', profile, name='profile'),
-    path('webshop/gameplay/', gameplay, name='gameplay'),
-   
+    path('webshop/gameplay/', gameplay, name='gameplay'),   
+    path('webshop/payment/', payment, name='payment'),
+    path('webshop/search/<str:search_text>', search_games, name='search'),
+    path('webshop/edit_profile', edit_profile, name='edit_profile'),
 ]
