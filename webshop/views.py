@@ -67,7 +67,7 @@ def signup(request):
                     message = render_to_string('webshop/activate_email.html', {
                         'user': user,
                         'domain': current_site.domain,
-                        'uid':user.id,
+                        'uid':urlsafe_base64_encode(force_bytes(user.id)),
                         'token':account_activation_token.make_token(user),
                     })
                     
@@ -157,8 +157,9 @@ def send_email(request, user_email, subject, message):
     
 
 
-def activate(request, uid, token):
+def activate(request, uidb64, token):
     try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
         user = get_object_or_404(User, pk=uid)
     except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
         raise Http404("No user found")
