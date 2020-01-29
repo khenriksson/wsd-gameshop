@@ -162,10 +162,10 @@ AUTHENTICATION_BACKENDS = (
 	'django.contrib.auth.backends.ModelBackend',
 	
 	#Allauth - 3rd party login
-	'allauth.account.auth_backends.AuthenticationBackend',
+#	'allauth.account.auth_backends.AuthenticationBackend',
 )
 # Use the first entry. --3rd party login
-SITE_ID=1
+#SITE_ID=1
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
