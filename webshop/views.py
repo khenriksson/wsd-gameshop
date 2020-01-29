@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.template import loader
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import BadHeaderError, send_mail
@@ -12,15 +12,10 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from hashlib import md5
-<<<<<<< HEAD
 from urllib.parse import urlencode
 
-from .models import Game, User, Transaction
-from .forms import SignUpForm, AddGameForm
-=======
-from .models import Game, User
+from .models import Game, UserProfile, Transaction, User
 from .forms import SignUpForm, AddGameForm, EditProfileForm
->>>>>>> 7947cf080c0ed73d1f21316dec89140d0f6e77ab
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -61,7 +56,7 @@ def signup(request):
         if request.method == 'POST':
                 form = SignUpForm(request.POST)
                 if form.is_valid():
-                    user = form.save()
+                    user = form.save(commit=False)
                     # username = form.cleaned_data.get('username')
                     #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False
@@ -72,9 +67,10 @@ def signup(request):
                     message = render_to_string('webshop/activate_email.html', {
                         'user': user,
                         'domain': current_site.domain,
-                        'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                        'uid':urlsafe_base64_encode(force_bytes(user.id)),
                         'token':account_activation_token.make_token(user),
                     })
+                    
                     send_email(request, user.email, subject, message)
                     messages.success(request, ('Please Confirm your email to complete registration.'))
                     return HttpResponse('Please confirm your email address to complete the registration')
@@ -85,12 +81,16 @@ def signup(request):
     
 
 def addgame(request):
+    
     if request.user.is_authenticated:
+
         game = Game()
+        user = request.user
         if request.method == 'POST':
             form = AddGameForm(request.POST)
             if form.is_valid():
                 game = form.save(commit = False)
+                game.developer = user
                 game.save()
                 return redirect('index')
             
@@ -98,6 +98,13 @@ def addgame(request):
             form = AddGameForm()
         return render(request, 'webshop/addgame.html', {'form': form})
     else: return redirect('index')
+
+def get_user(user):
+    try:
+        user = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        user = None
+    
 
 def profile(request):
     return render(request, 'webshop/profile.html')
@@ -145,7 +152,7 @@ def send_email(request, user_email, subject, message):
             return redirect('index')
         else:
             return HttpResponse('Make sure all fields are entered and valid.')
-    except User.DoesNotExist:
+    except UserProfile.DoesNotExist:
         raise Http404("User does not exist")
     
 
@@ -153,9 +160,9 @@ def send_email(request, user_email, subject, message):
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
+        user = get_object_or_404(User, pk=uid)
+    except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
+        raise Http404("No user found")
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
