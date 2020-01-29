@@ -36,6 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    
     'bootstrap4',
     'webshop',
     'django_heroku',
@@ -126,9 +134,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/webshop/'
-#AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend')
-
-
+AUTHENTICATION_BACKENDS = (
+	'django.contrib.auth.backends.ModelBackend',
+	
+	#Allauth - 3rd party login
+	'allauth.account.auth_backends.AuthenticationBackend',
+)
+# Use the first entry. --3rd party login
+SITE_ID=1
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -136,6 +149,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
 STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+
 
 
 django_heroku.settings(locals())
