@@ -37,43 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
+    
     'bootstrap4',
     'webshop',
     'django_heroku',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-]
-'''
-##Setting up the Provider setting:->
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    },
-    'facebook': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '531228277494195',
-            'secret': '975e763dedee19cd19d9b55a1bc6337e',
-            'key': ''
-        }
-    }
-}
 
-'''
+	'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+]
+
+SITE_ID=1
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
@@ -100,7 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
+                
+			],
         },
     },
 ]
@@ -158,15 +136,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/webshop/'
-AUTHENTICATION_BACKENDS = (
-	'django.contrib.auth.backends.ModelBackend',
-	
-	#Allauth - 3rd party login
-#	'allauth.account.auth_backends.AuthenticationBackend',
-)
-# Use the first entry. --3rd party login
-#SITE_ID=1
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
 
+#applying 3rd party login --- allauth
+'allauth.account.auth_backends.AuthenticationBackend',
+
+)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #Creating static files.

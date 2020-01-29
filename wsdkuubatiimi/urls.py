@@ -28,4 +28,5 @@ urlpatterns = [
     #path('webshop/accounts/', include('allauth.urls')),
     path('webshop/profile/', profile, name='profile'),
     path('webshop/gameplay/', gameplay, name='gameplay'),
+   
 ]
