@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
-
+'''
 ##Setting up the Provider setting:->
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -75,7 +75,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
+'''
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
