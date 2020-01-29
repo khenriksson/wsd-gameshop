@@ -62,8 +62,14 @@ function stopgame(){
 	clearInterval(myfun);
 	tx.font="30px Arial";
 	tx.fillText("GAME OVER Your score is: "+score.toFixed(0),50,50);
-	// Now send score to server-> 
-	
+	// Now send score to server->
+	var pisteet= {
+		"messageType":"SCORE",
+		"score":score.toFixed(0)
+				
+		};
+	 
+	window.parent.postMessage(pisteet,"*");
 	
 	var searchBt= document.getElementById('Bt');
 	searchBt.onclick=function() {StartGame(); this.onclick=null;};
@@ -154,7 +160,10 @@ function StartGame(){
 
 tx.font="30px Arial";
 tx.fillText("Start the game by pressing Start button: ",50,100);
-
+var viesti = {
+	messageType: "SETTING",
+	options:{"width":600,
+		"height":300}}
 
 
 
