@@ -51,6 +51,32 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+##Setting up the Provider setting:->
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    },
+    'facebook': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '531228277494195',
+            'secret': '975e763dedee19cd19d9b55a1bc6337e',
+            'key': ''
+        }
+    }
+}
+
+
+
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'whitenoise.middleware.WhiteNoiseMiddleware',
