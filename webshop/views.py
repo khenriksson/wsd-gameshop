@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import BadHeaderError, send_mail
 from django.db import transaction
 from hashlib import md5
-from .models import Game, User
+from .models import Game, User, GameData
 from .forms import SignUpForm, AddGameForm, EditProfileForm
 
 def webshop(request):
@@ -66,12 +66,29 @@ def addgame(request):
             if form.is_valid():
                 game = form.save(commit = False)
                 game.save()
-                return redirect('index')
-            
+                return redirect('index')   
         else:
             form = AddGameForm()
         return render(request, 'webshop/addgame.html', {'form': form})
     else: return redirect('index')
+
+def savegame(request):
+    if request.method == 'GET':
+        gameid = request.GET['game']
+        userid = request.GET['user']
+        game = Game.objects.get(pk=gameid)
+        user = request.user.user
+        gameInfo = request.GET['gameInfo']
+        '''try:
+            gameData = GameData.objects.get(game = game,
+            user = user.id)
+            gameData.gameInfo = gameInfo
+            gameData.save()
+        except:'''
+        gameData = GameData(game = game, user = user,
+        gameInfo = gameInfo)
+        gameData.save()
+    return HttpResponse("data saved")
 
 def profile(request):
     return render(request, 'webshop/profile.html')
