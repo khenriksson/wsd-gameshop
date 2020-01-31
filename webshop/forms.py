@@ -23,7 +23,7 @@ class EditProfileForm(forms.ModelForm):
 class AddGameForm(forms.ModelForm):
     purchases = forms.IntegerField(widget=forms.HiddenInput(), initial='0', required=False)
     game_url = forms.URLField(label='Your game URL',initial='http://', required=True)
-    picture_url = forms.URLField(label='Your picture URL',initial='http://', required=False)
+    picture_url = forms.URLField(label='Your picture URL', required=False)
     price = forms.FloatField(label='Game price', required=False)
     game_title = forms.CharField(label='Game name', max_length=50, required=True)
     description = forms.CharField(label='description', initial="", max_length=1000)

@@ -11,6 +11,7 @@
 
   <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>
+  <h2>Game owner: {{game.developer}}</h2>
   {% if user.is_authenticated %}
   <h2>Player: {{user.username}}</h2>
   <!-- Not done - add 'if' to check if game has been bought
