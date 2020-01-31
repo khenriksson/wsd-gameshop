@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from webshop.views import *
+from webshop import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +34,5 @@ urlpatterns = [
      #   views.activate, name='activate'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
-    path("webshop/savegame/", savegame, name='savegame'),
+    path("webshop/savegame/", views.savegame, name='savegame'),
 ]

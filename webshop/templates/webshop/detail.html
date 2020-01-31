@@ -2,12 +2,14 @@
 {% block content %}
 {% load static %}
 
+
+
 <div>
-  <script>
-    game = "{{game}}";
+  <script type="text/javascript">
+    gameID = "{{game.pk}}";
     user = "{{request.user}";
   </script>
-  <script src="{% static 'webshop/game.js' %}"></script>
+  <script  type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
 
   <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>

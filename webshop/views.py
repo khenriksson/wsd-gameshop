@@ -100,11 +100,11 @@ def addgame(request):
 
 def savegame(request):
     if request.method == 'GET':
-        game = request.GET['game']
-        user = request.GET['user']
+        game = request.GET['gameID']
+        user = request.user
         #game = Game.objects.get(pk=gameid)
         #user = request.user.user
-        gameInfo = request.GET['gameInfo']
+        gameInfo = request.GET['gameState']
         '''try:
             gameData = GameData.objects.get(game = game,
             user = user.id)

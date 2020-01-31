@@ -5,22 +5,21 @@ function getDomain() {
     return result;
 }
 
-function saveStates(gameInfo) {
+function saveStates(gameState) {
     var destination = getDomain() + "/webshop/savegame/";
     $.ajax({
         url: destination,
         type: "GET",
         data: {
             gameID: gameID,
-            user: user,
-            gameInfo: gameInfo
+            gameState: gameState
         },
         success: function (json) {
             console.log("saved");
         }
     });
 }
-
+/*
 function loadStates() {
     // domain does not exist yet - build in views
     var destination = getDomain() + "/webshop/loadgame/";
@@ -37,7 +36,7 @@ function loadStates() {
         }
     });
 }
-
+*/
 /* global $ */
 $(document).ready(function () {
     'use strict';
