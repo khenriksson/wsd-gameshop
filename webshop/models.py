@@ -42,8 +42,8 @@ class Wallet(models.Model):
         return self.owner
 
 class GameData(models.Model):
-    game = models.ForeignKey('Game', on_delete=models.CASCADE, default=1)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=1)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     gameInfo = models.TextField()
     score = models.IntegerField(default = 0)
     
