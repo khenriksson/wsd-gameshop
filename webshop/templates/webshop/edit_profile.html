@@ -5,7 +5,7 @@
 <p>Username: {{ user.get_username }}</p>
 <form method="POST" action="/webshop/edit_profile" class="" >
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_table }}
     <button type="submit">Save</button>
 </form>
 {% else %}

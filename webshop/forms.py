@@ -31,5 +31,16 @@ class AddGameForm(forms.ModelForm):
     class Meta:
         model = Game
         fields = ('game_title', 'purchases', 'game_url', 'picture_url', 'price')
+##Form for Editing a game.
+class EditGame(forms.ModelForm):	
 
-       
+	game_title = forms.CharField(label='Game title',max_length=50)
+	description = forms.CharField(label='Description',max_length=1000)
+	
+	game_url = forms.URLField(label='Game URL')
+	picture_url = forms.URLField(label='Picture URL')
+	price = forms.FloatField(label='Price of the game')
+
+	class Meta:
+		model= Game
+		fields=('game_title','description','price','game_url','picture_url')

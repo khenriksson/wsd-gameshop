@@ -34,5 +34,11 @@ urlpatterns = [
      #   views.activate, name='activate'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
+
+	#Modifying and removing a game
+    path('webshop/your_games', your_games, name='your_games'),
+    path('webshop/game<int:value>', game, name='game'),
+    
     path("webshop/savegame/", views.savegame, name='savegame'),
 ]
+handler404=chandler404

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseNotFound
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, get_user_model
@@ -10,12 +10,18 @@ from django.db import transaction
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.db import connection
+
+
 from .tokens import account_activation_token
 from hashlib import md5
 from urllib.parse import urlencode
 
 from .models import Game, UserProfile, Transaction, User, GameData
-from .forms import SignUpForm, AddGameForm, EditProfileForm
+from .forms import SignUpForm, AddGameForm, EditProfileForm, EditGame
+
+
+
 
 def webshop(request):
     all_games = Game.objects.all()
@@ -125,6 +131,94 @@ def get_user(user):
 def profile(request):
     return render(request, 'webshop/profile.html')
 
+
+
+
+
+
+def your_games(request):
+	if request.user.is_authenticated:
+		print(request.user)
+		print(request.user.pk)
+		#with connection.cursor() as cs:
+			#cs.execute("SELECT * From webshop_game ")
+			#cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
+		pelit=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+		print(2,pelit)
+			#a=cs.fetchall()
+		for peli in pelit:
+			data={'title:':peli.game_title,
+			'description': peli.description,
+			'bought':peli.times_bought,
+			'url':peli.game_url,
+			'picurl':peli.picture_url,
+			'price':peli.price,}
+				
+		print(data)
+		return render(request,"webshop/your_games.html",data)
+		#pass
+	
+def remove_game(request):
+	'''
+	with connection.cursor() as cs:
+		cs.execute("REMOVE * From webshop_game")
+	'''	
+	pass
+	
+def game(request,value):
+	
+	## Note to self: Using Pk as a game value sounds like a bad idea.
+	if request.user.is_authenticated:
+		
+		with connection.cursor() as cs:	
+			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
+			games={'data': cs.fetchall()}
+		if bool(games['data']):
+			print(bool(games['data']))
+			#Peli on olemassa buuyah-> jatkuu
+			##Checking if user really has the game.
+			print("Value: ",value)
+			peli=get_object_or_404(Game,pk=value) 
+		
+			form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
+			if request.method=='POST':
+				
+				print(1, form.is_valid())
+				
+				if form.is_valid():
+					
+					for i in ('game_title','description','price','game_url','picture_url'):
+						print(request.POST[i])
+					
+					peli.game_title = request.POST['game_title']
+					peli.description = request.POST['description']
+					peli.price = request.POST['price']
+					peli.game_url = request.POST['game_url']
+					peli.picture_url = request.POST['picture_url']
+					peli.save()
+					return redirect('webshop')
+				
+			
+			context = {
+				"game": form,
+				"val": value
+				}	
+			return render(request, "webshop/game.html",context)	
+		else:
+			raise Http404
+	raise Http404
+	
+##Modified 404 page	
+def chandler404(request,exception,template='webshop/404.html'):
+	print("Print me ")
+	response= render(request,template)
+	response.status_code=404
+	return response
+
+	
+
+	
+	
 def edit_profile(request):
     if request.user.is_authenticated:
         user = request.user
