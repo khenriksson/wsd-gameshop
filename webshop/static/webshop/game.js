@@ -1,4 +1,4 @@
-function getDomain() {
+function domain() {
     var url = window.location.href;
     var arr = url.split("/");
     var result = arr[0] + "//" + arr[2];
@@ -6,7 +6,7 @@ function getDomain() {
 }
 
 function saveStates(gameState) {
-    var destination = getDomain() + "/webshop/savegame/";
+    var destination = domain() + "/webshop/savegame/";
     $.ajax({
         url: destination,
         type: "GET",
@@ -21,7 +21,7 @@ function saveStates(gameState) {
 }
 
 function loadStates() {
-    var destination = getDomain() + "/webshop/loadgame/";
+    var destination = domain() + "/webshop/loadgame/";
     $.ajax({
         url: destination,
         type: "GET",
@@ -40,6 +40,20 @@ function loadStates() {
     });
 }
 
+function saveScore(score){
+    var destination = domain() + "/webshop/savescore/";  
+    $.ajax({
+      url : destination,
+      type : "GET",
+      data : { gameID : gameID,
+      score : score
+    },
+       success : function(json) {
+           console.log("highscore saved")
+     }
+   });
+  }
+
 /* global $ */
 $(document).ready(function () {
     'use strict';
@@ -54,6 +68,8 @@ $(document).ready(function () {
         };
 
         if (data.messageType == "SCORE") {
+            var score = data.score
+            saveScore(score)
             $('#score').empty();
             $('#score').append(data.score);
         };
@@ -63,7 +79,7 @@ $(document).ready(function () {
             console.log(gameState)
             saveStates(gameState)
             $('#actions').empty();
-            $('#actions').append("Saved");
+            $('#actions').append("Saved gamestate");
         };
 
         if (data.messageType == "LOAD_REQUEST") {
@@ -74,7 +90,7 @@ $(document).ready(function () {
             else {*/
             loadStates();
             $('#actions').empty();
-            $('#actions').append("Loaded");
+            $('#actions').append("Loaded gamestate");
             //}
         };
     });
