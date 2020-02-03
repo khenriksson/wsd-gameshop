@@ -6,12 +6,21 @@ Oppaa perillä ollaan. Nyt
 {{user.get_username}}
 
 
-{%for i in data%}
-<p>{{i.game_title}}</p>
-<br>
-<p>{{forloop.counter}}</p>
-<br>
+{%for x in data%}
+
+{{x}}::{{x}}
+
+
 {%endfor%}
+
+
+{%for x in data%}
+{{x}}
+
+{{forloop.counter}}
+{%endfor%}
+
+
 
 
 {%endblock%}

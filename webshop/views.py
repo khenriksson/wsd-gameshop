@@ -138,21 +138,25 @@ def profile(request):
 
 def your_games(request):
 	if request.user.is_authenticated:
-		print(request.user)
-		print(request.user.pk)
-		#with connection.cursor() as cs:
+		#print(request.user)
+		#print(request.user.pk)
+		data={}
+		with connection.cursor() as cs:
 			#cs.execute("SELECT * From webshop_game ")
-			#cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
-		pelit=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
-		print(2,pelit)
-			#a=cs.fetchall()
-		for peli in pelit:
-			data={'title:':peli.game_title,
-			'description': peli.description,
-			'bought':peli.times_bought,
-			'url':peli.game_url,
-			'picurl':peli.picture_url,
-			'price':peli.price,}
+			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
+			pelit=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+			#data['data']=cs.fetchall()
+		#print(2,pelit)
+			a=cs.fetchall()
+		
+			for peli in pelit:
+				data={'title:':peli.game_title,
+				'description': peli.description,
+				'bought':str(peli.times_bought),
+				'url':peli.game_url,
+				'picurl':peli.picture_url,
+				'price':str(peli.price),
+				'data':a}
 				
 		print(data)
 		return render(request,"webshop/your_games.html",data)
