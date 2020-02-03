@@ -36,5 +36,6 @@ urlpatterns = [
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
     path("webshop/savegame/", views.savegame, name='savegame'),
     path('webshop/loadgame/', views.loadgame, name='loadgame'),
-    path('webshop/savescore/', views.savescore, name='savescore')
+    path('webshop/savescore/', views.savescore, name='savescore'),
+    path('webshop/highscore/', views.highscore, name='highscore'),
 ]

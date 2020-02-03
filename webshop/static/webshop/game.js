@@ -54,8 +54,29 @@ function saveScore(score){
    });
   }
 
+function showHighscores() {
+    var destination = domain() + "/webshop/highscore/";
+    $.ajax ({
+        url: destination,
+        type : "GET",
+        data: { gameID: gameID
+    },
+        success: function(json) {
+        top10data = JSON.parse(json)
+        $.each(top10data, function() {
+            var user = this.fields.user;
+            var score = this.fields.score;
+            var listItem = '\n\t<li>' + user + ": " + score + '</li>';
+            console.log(listItem);
+            $('#highscores').prepend(listItem);
+        });
+        }
+    });
+}
+
 /* global $ */
 $(document).ready(function () {
+    showHighscores();
     'use strict';
     window.addEventListener('message', function (evt) {
         //Note that messages from all origins are accepted
