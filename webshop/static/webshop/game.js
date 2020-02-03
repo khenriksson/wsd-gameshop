@@ -19,24 +19,27 @@ function saveStates(gameState) {
         }
     });
 }
-/*
+
 function loadStates() {
-    // domain does not exist yet - build in views
     var destination = getDomain() + "/webshop/loadgame/";
     $.ajax({
         url: destination,
-        type: "POST",
+        type: "GET",
         data: {
-            gameID: gameID,
-            user: user,
-            gameInfo: gameInfo
-        },
+            gameID: gameID
+    },
         success: function (json) {
-            console.log("saved");
+            var gameState = JSON.parse(json);
+            var msg = {};
+            msg.messageType = "LOAD";
+            msg.gameState = gameState;
+            var frame = document.getElementById('gameframe');
+            frame.contentWindow.postMessage(msg, "*");
+            console.log("loaded");
         }
     });
 }
-*/
+
 /* global $ */
 $(document).ready(function () {
     'use strict';
@@ -69,16 +72,7 @@ $(document).ready(function () {
               $('#actions').append("No game state saved - could not load");
             }
             else {*/
-            // NOTE dummy data for testing load
-            var gameState = {
-                "playerItems": ['stone'],
-                "score": 50.0
-            };
-            var message = {
-                messageType: "LOAD", gameState
-            };
-            var frame = document.getElementById('gameframe');
-            frame.contentWindow.postMessage(message, "*");
+            loadStates();
             $('#actions').empty();
             $('#actions').append("Loaded");
             //}

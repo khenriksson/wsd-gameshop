@@ -35,4 +35,5 @@ urlpatterns = [
     path('webshop/search/<str:search_text>', search_games, name='search'),
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
     path("webshop/savegame/", views.savegame, name='savegame'),
+    path('webshop/loadgame/', views.loadgame, name='loadgame'),
 ]

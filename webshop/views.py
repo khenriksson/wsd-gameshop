@@ -102,19 +102,26 @@ def savegame(request):
     if request.method == 'GET':
         game = request.GET['gameID']
         user = request.user
-        #game = Game.objects.get(pk=gameid)
-        #user = request.user.user
         gameInfo = request.GET['gameState']
-        '''try:
+        try:
             gameData = GameData.objects.get(game = game,
-            user = user.id)
+            user = user)
             gameData.gameInfo = gameInfo
             gameData.save()
-        except:'''
-        gameData = GameData(game = game, user = user,
-        gameInfo = gameInfo)
-        gameData.save()
+        except:
+            gameData = GameData(game = game, user = user,
+            gameInfo = gameInfo)
+            gameData.save()
     return HttpResponse("data saved")
+
+def loadgame(request):
+    if request.method == 'GET':
+        game = request.GET['gameID']
+        user = request.user
+        gameData = GameData.objects.get(game = game, user = user)
+        gameState = gameData.gameInfo
+    return HttpResponse(gameState)
+
 def get_user(user):
     try:
         user = UserProfile.objects.get(user=user)
