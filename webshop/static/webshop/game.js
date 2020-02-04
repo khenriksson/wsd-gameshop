@@ -1,4 +1,4 @@
-function getDomain() {
+function domain() {
     var url = window.location.href;
     var arr = url.split("/");
     var result = arr[0] + "//" + arr[2];
@@ -6,7 +6,7 @@ function getDomain() {
 }
 
 function saveStates(gameState) {
-    var destination = getDomain() + "/webshop/savegame/";
+    var destination = domain() + "/webshop/savegame/";
     $.ajax({
         url: destination,
         type: "GET",
@@ -19,26 +19,64 @@ function saveStates(gameState) {
         }
     });
 }
-/*
+
 function loadStates() {
-    // domain does not exist yet - build in views
-    var destination = getDomain() + "/webshop/loadgame/";
+    var destination = domain() + "/webshop/loadgame/";
     $.ajax({
         url: destination,
-        type: "POST",
+        type: "GET",
         data: {
-            gameID: gameID,
-            user: user,
-            gameInfo: gameInfo
-        },
+            gameID: gameID
+    },
         success: function (json) {
-            console.log("saved");
+            var gameState = JSON.parse(json);
+            var msg = {};
+            msg.messageType = "LOAD";
+            msg.gameState = gameState;
+            var frame = document.getElementById('gameframe');
+            frame.contentWindow.postMessage(msg, "*");
+            console.log("loaded");
         }
     });
 }
-*/
+
+function saveScore(score){
+    var destination = domain() + "/webshop/savescore/";  
+    $.ajax({
+      url : destination,
+      type : "GET",
+      data : { gameID : gameID,
+      score : score
+    },
+       success : function(json) {
+           console.log("highscore saved")
+     }
+   });
+  }
+
+function showHighscores() {
+    var destination = domain() + "/webshop/highscore/";
+    $.ajax ({
+        url: destination,
+        type : "GET",
+        data: { gameID: gameID
+    },
+        success: function(json) {
+        top10data = JSON.parse(json)
+        $.each(top10data, function() {
+            var user = this.fields.user;
+            var score = this.fields.score;
+            var listItem = '\n\t<li>' + user + ": " + score + '</li>';
+            console.log(listItem);
+            $('#highscores').prepend(listItem);
+        });
+        }
+    });
+}
+
 /* global $ */
 $(document).ready(function () {
+    showHighscores();
     'use strict';
     window.addEventListener('message', function (evt) {
         //Note that messages from all origins are accepted
@@ -51,6 +89,8 @@ $(document).ready(function () {
         };
 
         if (data.messageType == "SCORE") {
+            var score = data.score
+            saveScore(score)
             $('#score').empty();
             $('#score').append(data.score);
         };
@@ -60,7 +100,7 @@ $(document).ready(function () {
             console.log(gameState)
             saveStates(gameState)
             $('#actions').empty();
-            $('#actions').append("Saved");
+            $('#actions').append("Saved gamestate");
         };
 
         if (data.messageType == "LOAD_REQUEST") {
@@ -69,18 +109,9 @@ $(document).ready(function () {
               $('#actions').append("No game state saved - could not load");
             }
             else {*/
-            // NOTE dummy data for testing load
-            var gameState = {
-                "playerItems": ['stone'],
-                "score": 50.0
-            };
-            var message = {
-                messageType: "LOAD", gameState
-            };
-            var frame = document.getElementById('gameframe');
-            frame.contentWindow.postMessage(message, "*");
+            loadStates();
             $('#actions').empty();
-            $('#actions').append("Loaded");
+            $('#actions').append("Loaded gamestate");
             //}
         };
     });

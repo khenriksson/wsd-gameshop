@@ -8,6 +8,7 @@
   <script type="text/javascript">
     gameID = "{{game.pk}}";
     user = "{{request.user}";
+    top10 = "{{top10}}";
   </script>
   <script  type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
 
@@ -16,16 +17,13 @@
   <h2>Game owner: {{game.developer}}</h2>
   {% if user.is_authenticated %}
   <h2>Player: {{user.username}}</h2>
-  <!-- Not done - add 'if' to check if game has been bought
-  <script type="text/javascript">
-    game = "{{game}}";
-    user = "{{user}}";
-  </script>-->
+  <!-- Not done - add 'if' to check if game has been bought-->
   <div id="iframe">
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
   </div>
-  <div>Score: <span id="score">0</span></div>
+  <div>Your current score: <span id="score">0</span></div>
   <div>Actions: <span id="actions"></span></div>
+  <div>Highscores:<ul id="highscores"></ul></div>
 </div>
 {% else %}
 <div>

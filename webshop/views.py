@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import BadHeaderError, send_mail
+from django.core import serializers
 from django.db import transaction
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -16,6 +17,7 @@ from django.db import connection
 from .tokens import account_activation_token
 from hashlib import md5
 from urllib.parse import urlencode
+import json
 
 from .models import Game, UserProfile, Transaction, User, GameData
 from .forms import SignUpForm, AddGameForm, EditProfileForm, EditGame
@@ -108,19 +110,50 @@ def savegame(request):
     if request.method == 'GET':
         game = request.GET['gameID']
         user = request.user
-        #game = Game.objects.get(pk=gameid)
-        #user = request.user.user
         gameInfo = request.GET['gameState']
-        '''try:
+        try:
             gameData = GameData.objects.get(game = game,
-            user = user.id)
+            user = user)
             gameData.gameInfo = gameInfo
             gameData.save()
-        except:'''
-        gameData = GameData(game = game, user = user,
-        gameInfo = gameInfo)
-        gameData.save()
+        except:
+            gameData = GameData(game = game, user = user,
+            gameInfo = gameInfo)
+            gameData.save()
     return HttpResponse("data saved")
+
+def loadgame(request):
+    if request.method == 'GET':
+        game = request.GET['gameID']
+        user = request.user
+        gameData = GameData.objects.get(game = game, user = user)
+        gameState = gameData.gameInfo
+    return HttpResponse(gameState)
+
+def savescore(request):
+    if request.method == 'GET':
+        game = request.GET['gameID']
+        score = request.GET['score']
+        user = request.user
+        try:
+            gameData = GameData.objects.get(game = game,
+            user = user)
+            gameData.score = score
+            gameData.save()
+        except:
+            gameData = GameData(game = game, user = user, score = score)
+            gameData.save()
+    return HttpResponse("score saved")
+
+def highscore(request):
+    if request.method == 'GET':
+        game = request.GET['gameID']
+        #testing with only top1
+        filtered = GameData.objects.filter(game=game).order_by('-score')[:3]
+        top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
+    return HttpResponse(json.dumps(top10), content_type="application/json")
+
+
 def get_user(user):
     try:
         user = UserProfile.objects.get(user=user)
@@ -240,15 +273,6 @@ def edit_profile(request):
         return render(request, 'webshop/edit_profile.html', context)
     else:
         return redirect('index')
-
-
-
-
-#def gameplay(request):
-#This method is not needed anymore - moved to detail
-    #return TemplateResponse(request, 'webshop/game.html', {'redirect_url':'https://www.google.com/url?q=https://users.aalto.fi/~oseppala/game/example_game.html&sa=D&ust=1579184818170000'}
-    #return render(request, 'webshop/gameplay.html')
-
 
 
 # A secure way of sending the registered emails

@@ -1,23 +1,25 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 
-<div class="row">
+<div class="card-deck">
   {% for game in all_games %}
-  <div class="col-3">
-    <div class="card" style="width: 21rem;">
-      <img
-        class="card-img-top"
-        src="{{game.picture_url}}"
-        alt="Card image cap"
-      />
-      <div class="card-body">
-        <h5 class="card-title">
-          <a href="/webshop/{{game.id}}/"> {{game.game_title}}</a>
-        </h5>
-        <p class="card-text">
+  <div class="card" style="width: 21rem;">
+    <img
+      class="card-img-top im-fluid"
+      src="{{game.picture_url}}"
+      alt="Card image cap"
+    />
+    <div class="card-body">
+      <h5 class="card-title">
+        <a href="/webshop/{{game.id}}/"> {{game.game_title}}</a>
+      </h5>
+      <p class="card-text">
+        {% if not game.description %}
+          No description available
+        {% else %}
           {{game.description}}
-        </p>
-        <a href="/webshop/{{game.id}}/" class="btn btn-primary">Go somewhere</a>
-      </div>
+        {% endif %}
+      </p>
+      <a href="/webshop/{{game.id}}/" class="btn btn-dark">To the game</a>
     </div>
   </div>
   {% endfor %}

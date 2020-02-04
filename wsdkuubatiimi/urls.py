@@ -40,5 +40,8 @@ urlpatterns = [
     path('webshop/game<int:value>', game, name='game'),
     
     path("webshop/savegame/", views.savegame, name='savegame'),
+    path('webshop/loadgame/', views.loadgame, name='loadgame'),
+    path('webshop/savescore/', views.savescore, name='savescore'),
+    path('webshop/highscore/', views.highscore, name='highscore'),
 ]
 handler404=chandler404
