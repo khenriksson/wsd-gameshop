@@ -26,10 +26,10 @@ class AddGameForm(forms.ModelForm):
     picture_url = forms.URLField(label='Your picture URL', required=False)
     price = forms.FloatField(label='Game price', required=False)
     game_title = forms.CharField(label='Game name', max_length=50, required=True)
-    description = forms.CharField(label='description', initial="", max_length=1000)
+    description = forms.CharField(label='Description', max_length=1000, required=False)
         
     class Meta:
         model = Game
-        fields = ('game_title', 'purchases', 'game_url', 'picture_url', 'price')
+        fields = ('game_title', 'purchases', 'game_url', 'picture_url', 'price', 'description')
 
        
