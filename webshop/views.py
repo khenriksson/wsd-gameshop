@@ -150,13 +150,13 @@ def your_games(request):
 			a=cs.fetchall()
 		
 			for peli in pelit:
-				data={'title:':peli.game_title,
+				data={'title':peli.game_title,
 				'description': peli.description,
 				'bought':str(peli.times_bought),
 				'url':peli.game_url,
 				'picurl':peli.picture_url,
 				'price':str(peli.price),
-				'data':a}
+				'dat':a}
 				
 		print(data)
 		return render(request,"webshop/your_games.html",data)

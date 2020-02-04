@@ -5,19 +5,11 @@
 Oppaa perillä ollaan. Nyt 
 {{user.get_username}}
 
+{%for key, value in data.items%}
 
-{%for x in data%}
-
-{{x}}::{{x}}
-
-
-{%endfor%}
+<p>{{key}}::{{value}}</p>
 
 
-{%for x in data%}
-{{x}}
-
-{{forloop.counter}}
 {%endfor%}
 
 
