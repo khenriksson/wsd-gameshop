@@ -107,10 +107,10 @@ def addgame(request):
     else: return redirect('index')
 
 def savegame(request):
-    if request.method == 'GET':
-        game = request.GET['gameID']
+    if request.method == 'POST':
+        game = request.POST['gameID']
         user = request.user
-        gameInfo = request.GET['gameState']
+        gameInfo = request.POST['gameState']
         try:
             gameData = GameData.objects.get(game = game,
             user = user)
@@ -123,23 +123,25 @@ def savegame(request):
     return HttpResponse("data saved")
 
 def loadgame(request):
-    if request.method == 'GET':
-        game = request.GET['gameID']
+    if request.method == 'POST':
+        game = request.POST['gameID']
         user = request.user
+        #Need to add: checking if loaded state exists
         gameData = GameData.objects.get(game = game, user = user)
         gameState = gameData.gameInfo
     return HttpResponse(gameState)
 
 def savescore(request):
-    if request.method == 'GET':
-        game = request.GET['gameID']
-        score = request.GET['score']
+    if request.method == 'POST':
+        game = request.POST['gameID']
+        score = request.POST['score']
         user = request.user
         try:
             gameData = GameData.objects.get(game = game,
             user = user)
-            gameData.score = score
-            gameData.save()
+            if (int(score) > gameData.score):
+                gameData.score = score
+                gameData.save()
         except:
             gameData = GameData(game = game, user = user, score = score)
             gameData.save()
