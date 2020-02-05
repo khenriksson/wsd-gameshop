@@ -53,8 +53,24 @@ body {
   width: 80%;
 }
 
+#game_topbox {
+  position: relative;
+
+  margin: 5% 10% 5% 10%;
+}
+
+#game_imgbox {
+  position: relative;
+  margin-top: 20px;
+  max-width: 500px;
+  width: 100%;
+  
+}
+
 /* Other Classes for Page Styling */
 .card-style  {
   margin: 200;
 
 }
+
+
