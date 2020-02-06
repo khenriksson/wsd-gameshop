@@ -4,14 +4,35 @@
 {% load static %}
 {% if user.is_authenticated %}
 
-Edit game:
+
+<table class="table">
+<thead>
+<tr>
+	<th>Modify Game</th>
+	<th>Remove Game</th>
+</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>
 <form method="POST" class="" >
     {% csrf_token %}
     {{ game.as_p }}
     
-    {{val}}
-    <button type="submit">Save</button>
+    
+    <button type="submit" class="btn btn-success">Save</button>
 </form>
+</td>
+<td style= "vertical-align: middle;">
+
+<a href="/webshop/removegame/{{val}}" class="btn btn-danger" role="button">Remove Game</a>
+
+
+</td>
+</tr>
+</tbody>
+</table>
+
 
 {% endif %} 
 

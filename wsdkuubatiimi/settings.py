@@ -123,8 +123,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/webshop/'
-#AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend')
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend')
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mailtrap.io'

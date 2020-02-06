@@ -2,15 +2,50 @@
 {% block content %}
 {% load static %}
 
-Oppaa perillä ollaan. Nyt 
-{{user.get_username}}
+<h2>Your owned games</h2>
+{%if game%}
+games here..... 
+{%else%}
+You dont have games
+{%endif%}
 
-{%for key, value in data.items%}
+<br>
+{%if data%}
+<h2>You are developer of these games:</h2>
 
-<p>{{key}}::{{value}}</p>
+
+
+<table class="table">
+	<thead>
+	 <tr>
+      <th scope="col">Game title:</th>
+      <th scope="col">Price:</th>
+      <th scope="col">Bought:</th>
+      <th scope="col">Modify the game:</th>
+    </tr>
+	</thead>
+	<tbody>
+{%for key,value in data.items%}
+{%for k, val in value.items%}
+<tr>
+<th>{{val.title}}</th>
+<td>{{val.price}}</td>
+<td>{{val.bought}}</td>
+<td>
+	
+	<a href="/webshop/game{{val.id}}">make</a></td>
+</tr>
+
 
 
 {%endfor%}
+
+{%endfor%}
+{%endif%}
+
+</tbody>
+</table>
+
 
 
 

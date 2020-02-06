@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, Http404, HttpResponseNotFound
 from django.template import loader
 from django.contrib import messages
@@ -171,36 +171,53 @@ def profile(request):
 
 def your_games(request):
 	if request.user.is_authenticated:
-		#print(request.user)
-		#print(request.user.pk)
-		data={}
-		with connection.cursor() as cs:
-			#cs.execute("SELECT * From webshop_game ")
-			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
-			pelit=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
-			#data['data']=cs.fetchall()
-		#print(2,pelit)
-			a=cs.fetchall()
 		
-			for peli in pelit:
-				data={'title':peli.game_title,
-				'description': peli.description,
-				'bought':str(peli.times_bought),
-				'url':peli.game_url,
-				'picurl':peli.picture_url,
-				'price':str(peli.price),
-				'dat':a}
+		data={}
+	
+			
+		pelit=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+			
+			
+		##Adding all of the games data (i.e title...) that user in developer into dictionary
+		for x in range(0,len(pelit)):
+			data[str(pelit[x].id)]={
+				'data':
+				{
+				'id':str(pelit[x].id),
+				'title':pelit[x].game_title,
+				'description': pelit[x].description,
+				'bought':str(pelit[x].times_bought),
+				'url':pelit[x].game_url,
+				'picurl':pelit[x].picture_url,
+				'price':str(pelit[x].price),
 				
-		print(data)
-		return render(request,"webshop/your_games.html",data)
+				},
+				
+				}
+				
+		data2={'data':data}
+		return render(request,"webshop/your_games.html",data2)
 		#pass
 	
-def remove_game(request):
+def remove_game(request,value):
+	
+	if request.user.is_authenticated:
+		##Checking if user owns the game.
+		
+		peli=get_object_or_404(Game,pk=value, developer_id=request.user.pk)
+		##Remove the game
+		Game.objects.filter(id=peli.pk).delete()
+		
+		
+		##Return to your_games
+		return redirect('/webshop/your_games')
+	else:
+		return Http404
 	'''
 	with connection.cursor() as cs:
 		cs.execute("REMOVE * From webshop_game")
 	'''	
-	pass
+
 	
 def game(request,value):
 	
@@ -212,7 +229,7 @@ def game(request,value):
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
 			print(bool(games['data']))
-			#Peli on olemassa buuyah-> jatkuu
+			#Game excists
 			##Checking if user really has the game.
 			print("Value: ",value)
 			peli=get_object_or_404(Game,pk=value) 
@@ -220,7 +237,6 @@ def game(request,value):
 			form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
 			if request.method=='POST':
 				
-				print(1, form.is_valid())
 				
 				if form.is_valid():
 					
@@ -233,7 +249,7 @@ def game(request,value):
 					peli.game_url = request.POST['game_url']
 					peli.picture_url = request.POST['picture_url']
 					peli.save()
-					return redirect('webshop')
+					return redirect('/webshop/your_games')
 				
 			
 			context = {
@@ -245,9 +261,8 @@ def game(request,value):
 			raise Http404
 	raise Http404
 	
-##Modified 404 page	
+##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
-	print("Print me ")
 	response= render(request,template)
 	response.status_code=404
 	return response

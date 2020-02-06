@@ -38,6 +38,8 @@ urlpatterns = [
 	#Modifying and removing a game
     path('webshop/your_games', your_games, name='your_games'),
     path('webshop/game<int:value>', game, name='game'),
+    path('webshop/removegame/<int:value>',remove_game,name="remove_game"),
+    
     
     path("webshop/savegame/", views.savegame, name='savegame'),
     path('webshop/loadgame/', views.loadgame, name='loadgame'),
