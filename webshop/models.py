@@ -25,7 +25,7 @@ class Game(models.Model):
     purchases = models.IntegerField()
     developer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     game_url = models.URLField()
-    picture_url = models.URLField(default="https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920", blank=True)
+    picture_url = models.URLField(blank=True,default="https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920")
     price = models.FloatField()
     game_title = models.CharField(max_length=50, default="Untitled")
     description = models.CharField(max_length=1000, default="")

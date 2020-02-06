@@ -99,6 +99,8 @@ def addgame(request):
             if form.is_valid():
                 game = form.save(commit = False)
                 game.developer = user
+                #game.picture_url='https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920'
+                
                 game.save()
                 return redirect('index')   
         else:
