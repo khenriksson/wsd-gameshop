@@ -5,14 +5,35 @@ function domain() {
     return result;
 }
 
+// From https://docs.djangoproject.com/en/3.0/ref/csrf/
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+// var csrftoken = getCookie('csrftoken');
+
 function saveStates(gameState) {
+    console.log(domain())
     var destination = domain() + "/webshop/savegame/";
+    var csrftoken = getCookie('csrftoken');
     $.ajax({
         url: destination,
-        type: "GET",
+        type: "POST",
         data: {
             gameID: gameID,
-            gameState: gameState
+            gameState: gameState,
+            csrfmiddlewaretoken: csrftoken
         },
         success: function (json) {
             console.log("saved");
@@ -22,11 +43,13 @@ function saveStates(gameState) {
 
 function loadStates() {
     var destination = domain() + "/webshop/loadgame/";
+    var csrftoken = getCookie('csrftoken');
     $.ajax({
         url: destination,
-        type: "GET",
+        type: "POST",
         data: {
-            gameID: gameID
+            gameID: gameID,
+            csrfmiddlewaretoken: csrftoken
     },
         success: function (json) {
             var gameState = JSON.parse(json);
@@ -41,12 +64,15 @@ function loadStates() {
 }
 
 function saveScore(score){
-    var destination = domain() + "/webshop/savescore/";  
+    var destination = domain() + "/webshop/savescore/"; 
+    var csrftoken = getCookie('csrftoken'); 
     $.ajax({
       url : destination,
-      type : "GET",
-      data : { gameID : gameID,
-      score : score
+      type : "POST",
+      data : {
+        gameID : gameID,
+        score : score,
+        csrfmiddlewaretoken: csrftoken
     },
        success : function(json) {
            console.log("highscore saved")

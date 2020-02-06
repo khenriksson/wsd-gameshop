@@ -11,12 +11,14 @@
     top10 = "{{top10}}";
   </script>
   <script  type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
-
-  <h2>Title: {{game.game_title}}</h2>
-  <h2>Game id: {{game.id}}</h2>
-  <h2>Game owner: {{game.developer}}</h2>
   {% if user.is_authenticated %}
-  <h2>Player: {{user.username}}</h2>
+  <div id="game_topbox">
+    <h2>You are playing <strong>{{game.game_title}}</strong></h2>
+    <h4>Game developed by {{game.developer}}</h4>
+    <p>{{game.description}}</p>
+  </div>
+  <!--h2>Game id: {{game.id}}<h2/!-->
+  <!--h2>Player: {{user.username}}<h2/!-->
   <!-- Not done - add 'if' to check if game has been bought-->
   <div id="iframe">
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
@@ -26,9 +28,12 @@
   <div>Highscores:<ul id="highscores"></ul></div>
 </div>
 {% else %}
-<div>
-  <p>Log in to buy and play the game :)</p>
-  <img class="card-img-top" src="{{game.picture_url}}" alt="Card image cap" />
+<div id="game_topbox">
+  <h4>Log in to buy and play<br>{{game.game_title}}</h4>
+  <a href="/webshop/accounts/login/" class="btn btn-outline-dark">Log in</a>
+  <p>Don't have an account yet?</p>
+  <a href="/webshop/signup/" class="btn btn-dark">Sign up</a><br>
+  <img id="game_imgbox" class="card-img-top" src="{{game.picture_url}}" alt="Card image cap" />
 </div>
 {% endif %}
 </div>
