@@ -201,7 +201,8 @@ def your_games(request):
 				
 		data2={'data':data}
 		return render(request,"webshop/your_games.html",data2)
-		#pass
+	else:
+		return Http404
 	
 def remove_game(request,value):
 	
@@ -262,8 +263,8 @@ def game(request,value):
 				}	
 			return render(request, "webshop/game.html",context)	
 		else:
-			raise Http404
-	raise Http404
+			return Http404
+	return Http404
 	
 ##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
