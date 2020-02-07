@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 
+from hashlib import md5
+
+
 import datetime
 # Create your models here.
 
@@ -25,8 +28,8 @@ class Game(models.Model):
     purchases = models.IntegerField()
     developer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     game_url = models.URLField()
-    picture_url = models.URLField(blank=True,default="https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920")
-    price = models.FloatField()
+    picture_url = models.URLField(default="https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920", blank=True)
+    price = models.DecimalField(decimal_places=2, max_digits=8) # Needs to be decimalfield
     game_title = models.CharField(max_length=50, default="Untitled")
     description = models.CharField(max_length=1000, default="")
     times_bought = models.PositiveIntegerField(default = 0)
@@ -49,11 +52,16 @@ class GameData(models.Model):
     
 class Transaction(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    buyer = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     state = models.CharField(blank=True,max_length=20)
-    checksum= models.CharField(max_length=100, default="")
+
     buy_started = models.DateTimeField(default=datetime.datetime.now, blank=True)
     buy_completed = models.DateTimeField(null=True)
+
+    # def checksum(self):
+    #     checksumstr = "pid={self.id}&sid={'wsdkuubatiimi'}&amount={self.game.price}&token={SETTINGS.PAYMENTKEY}"
+    #     m = md5(checksumstr.encode('utf-8')).hexdigest()
+    #     return m
 
 
     def __str__(self):

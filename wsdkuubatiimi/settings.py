@@ -22,6 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^k31#^w)mzxk5*(uvu+h$aiouu@&lv2r*r@t)k1!o3dwzgxr1o'
 
+# Payment key used in transactions
+PAYMENT_KEY = 'payment1'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
