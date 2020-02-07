@@ -52,13 +52,22 @@ function loadStates() {
             csrfmiddlewaretoken: csrftoken
     },
         success: function (json) {
-            var gameState = JSON.parse(json);
-            var msg = {};
-            msg.messageType = "LOAD";
-            msg.gameState = gameState;
-            var frame = document.getElementById('gameframe');
-            frame.contentWindow.postMessage(msg, "*");
-            console.log("loaded");
+            if (json) {
+                var gameState = JSON.parse(json);
+                var msg = {};
+                msg.messageType = "LOAD";
+                msg.gameState = gameState;
+                var frame = document.getElementById('gameframe');
+                frame.contentWindow.postMessage(msg, "*");
+                $('#actions').empty();
+                $('#actions').append("Loaded gamestate");
+                console.log("loaded");
+            }
+            else {
+                $('#actions').empty();
+                $('#actions').append("No gamestate saved - could not load");
+                console.log("loading no success");
+            }
         }
     });
 }
@@ -136,8 +145,6 @@ $(document).ready(function () {
             }
             else {*/
             loadStates();
-            $('#actions').empty();
-            $('#actions').append("Loaded gamestate");
             //}
         };
     });

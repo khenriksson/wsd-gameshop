@@ -129,8 +129,11 @@ def loadgame(request):
         game = request.POST['gameID']
         user = request.user
         #Need to add: checking if loaded state exists
-        gameData = GameData.objects.get(game = game, user = user)
-        gameState = gameData.gameInfo
+        try:
+            gameData = GameData.objects.get(game = game, user = user)
+            gameState = gameData.gameInfo
+        except:
+            gameState = ''
     return HttpResponse(gameState)
 
 def savescore(request):
