@@ -6,8 +6,10 @@
   <script>
     game = "{{game}}";
     user = "{{request.user}";
+    
   </script>
   <script src="{% static 'webshop/game.js' %}"></script>
+  
 
   <h2>Title: {{game.game_title}}</h2>
   <h2>Game id: {{game.id}}</h2>
@@ -24,6 +26,7 @@
   </div>
   <div>Score: <span id="score">0</span></div>
   <div>Actions: <span id="actions"></span></div>
+  <button onclick="location.href='{% url 'payment' game.id %}';" class="btn btn-success pull-right">Buy</button>
 </div>
 {% else %}
 <div>

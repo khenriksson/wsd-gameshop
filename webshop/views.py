@@ -11,8 +11,14 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
-from hashlib import md5
 from urllib.parse import urlencode
+from hashlib import md5
+from uuid import uuid4
+
+from wsdkuubatiimi.settings import PAYMENT_KEY
+import decimal
+
+
 
 from .models import Game, UserProfile, Transaction, User, GameData
 from .forms import SignUpForm, AddGameForm, EditProfileForm
@@ -47,7 +53,7 @@ def detail(request, game_id):
         game = Game.objects.get(pk=game_id)
     except Game.DoesNotExist:
         raise Http404("Game does not exist")
-    return render(request, 'webshop/detail.html', {'game': game})
+    return render(request, 'webshop/detail.html', {'game': game, })
 
 def signup(request):
     if request.user.is_authenticated:
@@ -192,26 +198,40 @@ def activate(request, uidb64, token):
 # def payment(request):
 #     return render(request, 'webshop/payment.html')
 
-@transaction.atomic
-def payment(request):
-    # This code executes inside a transaction.
-    #game = get_object_or_404(Game, pk=request.game.id)
-    #price = game.price
-    # buyer = get_object_or_404(User, pk=request.user)
 
-    sid = "l1YLtkV4YW1wbGU="
-    pid = "payment1"
-    amount = "9.95"
-    secret = "1f08IXzzUNKUSye_5LTWy78t83wA"
-    checksumstr = "pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+def payment(request, game_id):
+    # This code executes inside a transaction.
+    user = request.user.id
+    buyer = get_object_or_404(User, pk=user)
+    game = get_object_or_404(Game, pk=game_id)
+    amount = decimal.Decimal(game.price)
+    
+
+    pid = str(uuid4()) # Generate this everytime
+    sid = "tb6AYmthc3Blcg==" #Constant 
+    secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
+
+    #checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
+                                                            sid,
+                                                            amount,
+                                                            secret)
+
     checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+    
+        
+    payment = Transaction(buyer=buyer,  game=game,  state="success")
+    payment.save()
+
     bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
-    print(checksum)
     query = urlencode({
         'pid': pid, 'sid': sid, 'amount': amount,
         'checksum': checksum,
+        #'pid': 'payment1', 'sid': 'l1YLtkV4YW1wbGU=', 'amount': '9.95',
+        #'checksum': '4dcd406dca0a2fe61f38db186299f30d',
         'success_url': 'http://localhost:8000/payment/success',
         'cancel_url': 'http://localhost:8000/payment/cancel',
         'error_url': 'http://localhost:8000/payment/error'})
 
     return redirect(bankapi + '?' + query)
+
