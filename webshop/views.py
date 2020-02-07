@@ -343,7 +343,7 @@ def payment(request, game_id):
     user = request.user.id
     buyer = get_object_or_404(User, pk=user)
     game = get_object_or_404(Game, pk=game_id)
-    amount = decimal.Decimal(game.price)
+    amount = game.price
     
 
     pid = str(uuid4()) # Generate this everytime
