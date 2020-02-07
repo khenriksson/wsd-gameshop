@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import include
 from webshop.views import *
 from webshop import views
-
+from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webshop/', webshop, name='index'),
@@ -26,6 +26,12 @@ urlpatterns = [
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
     path('webshop/accounts/', include('django.contrib.auth.urls')),
+    
+    path('webshop/accounts/', include('allauth.urls')),
+    
+
+    
+    
     path('webshop/profile/', profile, name='profile'),
     path('webshop/payment/', payment, name='payment'),
     path('activate/<uidb64>/<token>/', activate, name='activate' ),

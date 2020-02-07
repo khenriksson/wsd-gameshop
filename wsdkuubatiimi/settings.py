@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.sites',
     
+    
+	
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -131,7 +133,8 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/webshop/'
 
 
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
+AUTHENTICATION_BACKENDS = (
+'django.contrib.auth.backends.ModelBackend',
 'allauth.account.auth_backends.AuthenticationBackend',
 )
 
@@ -139,6 +142,18 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 
 
 
