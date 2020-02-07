@@ -373,7 +373,3 @@ def payment(request, game_id):
         'error_url': 'http://localhost:8000/payment/error'})
 
     return redirect(bankapi + '?' + query)
-<<<<<<< HEAD
-=======
-
->>>>>>> fix
