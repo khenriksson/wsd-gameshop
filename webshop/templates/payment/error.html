@@ -1,3 +1,7 @@
 {% extends "base.html" %}{% block content %}
-<p>There was an error processing your request</p>
+{% if error %}
+{{error}}
+{% else %}
+<p>There was a problem processing.</p>
+{% endif %}
 {% endblock %}

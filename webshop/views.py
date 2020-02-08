@@ -4,10 +4,13 @@ from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import BadHeaderError, send_mail
 from django.core import serializers
-from django.db import transaction
+from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
@@ -328,42 +331,52 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
     else:
-        return HttpResponse('Activation link is invalid!')
+        return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
 
 #PAYMENT METHODS DOWN HERE
 
-# def payment(request):
-#     return render(request, 'webshop/payment.html')
-
-
+@login_required
+@transaction.atomic()
 def payment(request, game_id):
     # This code executes inside a transaction.
     user = request.user.id
     buyer = get_object_or_404(User, pk=user)
     game = get_object_or_404(Game, pk=game_id)
     amount = game.price
-    
+
     pid = str(uuid4()) # Generate this everytime
     sid = "tb6AYmthc3Blcg==" #Constant 
     secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
+ 
+    owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
+    own = Game.objects.filter(developer=buyer).exists()
+    if not owned:
+        if own:
+            return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
+        else: 
+            try:
+                with transaction.atomic():
+                    payment = Transaction(buyer=buyer,  game=game, pid=pid)
+                    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
+                                                                    sid,
+                                                                    amount,
+                                                                    secret)
+                    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+                    payment.save()
+            except IntegrityError:
+                return render(request, 'payment/error.html',{'error':"You already own the game."})
+    else:
+        return render(request, 'payment/error.html', {'error':"You already own the game."})
 
     #checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
-    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
-                                                            sid,
-                                                            amount,
-                                                            secret)
-    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
-    payment = Transaction(buyer=buyer,  game=game)
-    payment.save()
+    
 
     bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
     query = urlencode({
         'pid': pid, 'sid': sid, 'amount': amount,
         'checksum': checksum,
-        #'pid': 'payment1', 'sid': 'l1YLtkV4YW1wbGU=', 'amount': '9.95',
-        #'checksum': '4dcd406dca0a2fe61f38db186299f30d',
         'success_url': 'http://localhost:8000/payment/success',
         'cancel_url': 'http://localhost:8000/payment/cancel',
         'error_url': 'http://localhost:8000/payment/error'})
@@ -374,8 +387,8 @@ def payment(request, game_id):
 def error(request):
     pid = request.GET['pid']
     data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'pending':
-        data.state ='rejected'
+    if data.state == 'Pending':
+        data.state ='Rejected'
         data.save()
         return render(request, 'payment/error.html')
     return render(request, 'payment/error.html')
@@ -384,9 +397,25 @@ def error(request):
 def cancel(request):
     pid = request.GET['pid']
     data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'pending':
-        data.state ='rejected'
+    if data.state == 'Pending':
+        data.state ='Rejected'
         data.save()
-        return render(request, 'payment/error.html')
+        return render(request, 'payment/cancel.html')
+    return render(request, 'payment/cancel.html')
+
+
+def success(request):
+    if request.GET.get('result') == 'success':
+        pid = request.GET['pid']
+        data = get_object_or_404(Transaction, pid=pid)
+        
+        if data.state == 'Pending':
+            print(data.state)
+            data.state ='Confirmed'
+            data.buy_completed = timezone.now()
+            data.save()
+            return render(request, 'payment/success.html')
+        elif data.state == 'Confirmed':
+            return render(request, 'payment/owned.html')
     return render(request, 'payment/error.html')
 

@@ -31,13 +31,16 @@ urlpatterns = [
     path('webshop/profile/', profile, name='profile'),
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
+
     
     path('activate/<uidb64>/<token>/', activate, name='activate' ),
 
     #Payment Urls
     path('webshop/payment/<game_id>/', payment, name='payment'),
     path('payment/error/', error, name='error'),
-    path('payment/error/', cancel, name='cancel'),
+    path('payment/cancel/', cancel, name='cancel'),
+    path('payment/success/', success, name='success'),
+    path('payment/owned/', payment, name='payment'),
 
 
 	#Modifying and removing a game

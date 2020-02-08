@@ -53,12 +53,14 @@ class GameData(models.Model):
 class Transaction(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
-    state = models.CharField(blank=True,max_length=20)
+    state = models.CharField(max_length=20, default="Pending")
     buy_started = models.DateTimeField(default=datetime.datetime.now, blank=True)
     buy_completed = models.DateTimeField(null=True)
+    pid = models.CharField(blank=True, max_length=64)
 
-
+    class Meta:
+        unique_together = ('game', 'buyer')
 
     def __str__(self):
-        return (self.buyer, self.game)
+        return self.buyer.username
 
