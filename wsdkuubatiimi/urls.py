@@ -19,6 +19,7 @@ from django.conf.urls import include
 from webshop.views import *
 from webshop import views
 from django.views.generic import TemplateView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webshop/', webshop, name='index'),
@@ -26,17 +27,18 @@ urlpatterns = [
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
     path('webshop/accounts/', include('django.contrib.auth.urls')),
-    
     path('webshop/accounts/', include('allauth.urls')),
-    
-
-    
-    
     path('webshop/profile/', profile, name='profile'),
-    path('webshop/payment/<game_id>/', payment, name='payment'),
-    path('activate/<uidb64>/<token>/', activate, name='activate' ),
-    path('webshop/search/<str:search_text>', search_games, name='search'),
     path('webshop/edit_profile', edit_profile, name='edit_profile'),
+    path('webshop/search/<str:search_text>', search_games, name='search'),
+    
+    path('activate/<uidb64>/<token>/', activate, name='activate' ),
+
+    #Payment Urls
+    path('webshop/payment/<game_id>/', payment, name='payment'),
+    path('payment/error/', error, name='error'),
+    path('payment/error/', cancel, name='cancel'),
+
 
 	#Modifying and removing a game
     path('webshop/your_games', your_games, name='your_games'),

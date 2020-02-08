@@ -345,7 +345,6 @@ def payment(request, game_id):
     game = get_object_or_404(Game, pk=game_id)
     amount = game.price
     
-
     pid = str(uuid4()) # Generate this everytime
     sid = "tb6AYmthc3Blcg==" #Constant 
     secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
@@ -355,11 +354,8 @@ def payment(request, game_id):
                                                             sid,
                                                             amount,
                                                             secret)
-
     checksum = md5(checksumstr.encode('utf-8')).hexdigest()
-    
-        
-    payment = Transaction(buyer=buyer,  game=game,  state="success")
+    payment = Transaction(buyer=buyer,  game=game)
     payment.save()
 
     bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
@@ -373,3 +369,24 @@ def payment(request, game_id):
         'error_url': 'http://localhost:8000/payment/error'})
 
     return redirect(bankapi + '?' + query)
+
+
+def error(request):
+    pid = request.GET['pid']
+    data = get_object_or_404(Transaction, pid=pid)
+    if data.state == 'pending':
+        data.state ='rejected'
+        data.save()
+        return render(request, 'payment/error.html')
+    return render(request, 'payment/error.html')
+
+    
+def cancel(request):
+    pid = request.GET['pid']
+    data = get_object_or_404(Transaction, pid=pid)
+    if data.state == 'pending':
+        data.state ='rejected'
+        data.save()
+        return render(request, 'payment/error.html')
+    return render(request, 'payment/error.html')
+
