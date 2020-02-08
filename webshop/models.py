@@ -25,7 +25,6 @@ class UserProfile(models.Model):
 # https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920
 # Default picture for url
 class Game(models.Model):
-    purchases = models.IntegerField()
     developer = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     game_url = models.URLField()
     picture_url = models.URLField(default="https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920", blank=True)
@@ -59,7 +58,7 @@ class Transaction(models.Model):
     pid = models.CharField(blank=True, max_length=64)
 
     class Meta:
-        unique_together = ('game', 'buyer')
+        unique_together = ('game', 'buyer', 'pid')
 
     def __str__(self):
         return self.buyer.username

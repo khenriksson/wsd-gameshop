@@ -3,12 +3,38 @@
 {% load static %}
 
 <h2>Your owned games</h2>
-{%if game%}
-games here..... 
+{%if own_games%}
+<table class="table">
+	<thead>
+	 <tr>
+      <th scope="col">Game title:</th>
+      <th scope="col">Price:</th>
+      <th scope="col">Bought:</th>
+
+    </tr>
+	</thead>
+	<tbody>
+{%for key,value in own_games.items%}
+{%for k, val in value.items%}
+<tr>
+<th>{{val.title}}</th>
+<td>{{val.price}}</td>
+<td>{{val.times_bought}}</td>
+<td>
+	
+
+</tr>
+
+
+
+{%endfor%}
+{%endfor%}
+
 {%else%}
 You dont have games
 {%endif%}
-
+</tbody>
+</table>
 <br>
 {%if data%}
 <h2>You are developer of these games:</h2>
@@ -30,10 +56,10 @@ You dont have games
 <tr>
 <th>{{val.title}}</th>
 <td>{{val.price}}</td>
-<td>{{val.bought}}</td>
+<td>{{val.times_bought}}</td>
 <td>
 	
-	<a href="/webshop/game{{val.id}}">make</a></td>
+	<a href="/webshop/game{{val.id}}">Modify {{val.title}}</a></td>
 </tr>
 
 

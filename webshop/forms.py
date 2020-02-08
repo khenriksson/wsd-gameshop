@@ -26,8 +26,7 @@ class EditProfileForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email')
 
 class AddGameForm(forms.ModelForm):
-    purchases = forms.IntegerField(widget=forms.HiddenInput(), initial='0', required=False)
-    game_url = forms.URLField(label='Your game URL',initial='http://', required=True)
+    game_url = forms.URLField(label='Your game URL', required=True)
     picture_url = forms.URLField(label='Your picture URL', required=False)
     price = forms.FloatField(label='Game price', required=False)
     game_title = forms.CharField(label='Game name', max_length=50, required=True)
@@ -36,7 +35,7 @@ class AddGameForm(forms.ModelForm):
     class Meta:
         model = Game
 
-        fields = ('game_title', 'purchases', 'game_url', 'picture_url', 'price')
+        fields = ('game_title', 'game_url', 'picture_url', 'price')
 ##Form for Editing a game.
 class EditGame(forms.ModelForm):	
     
