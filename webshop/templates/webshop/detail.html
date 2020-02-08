@@ -26,7 +26,11 @@
   <div>Your current score: <span id="score">0</span></div>
   <div>Actions: <span id="actions"></span></div>
   <div>Highscores:<ul id="highscores"></ul></div>
+  {% if test == 'yes' %}
+
+  {% else %}
   <button onclick="location.href='{% url 'payment' game.id %}';" class="btn btn-success pull-right">Buy</button>
+  {% endif %}
 </div>
 {% else %}
 <div id="game_topbox">

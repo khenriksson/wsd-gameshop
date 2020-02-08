@@ -56,9 +56,14 @@ def search_games(request, search_text):
 def detail(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
+        owned = Transaction.objects.filter(buyer=request.user, game=game, state='Confirmed').exists()
+        own = Game.objects.filter(developer=request.user).exists()
+        test = 'no'
+        if owned or own:
+            test ='yes'
     except Game.DoesNotExist:
         raise Http404("Game does not exist")
-    return render(request, 'webshop/detail.html', {'game': game, })
+    return render(request, 'webshop/detail.html', {'game': game, 'test': test })
 
 def signup(request):
     if request.user.is_authenticated:
