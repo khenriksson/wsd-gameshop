@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseNotFound
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
@@ -75,6 +76,10 @@ def signup(request):
                 form = SignUpForm(request.POST)
                 if form.is_valid():
                     user = form.save(commit=False)
+                    group = request.POST.get('group')
+                    if group == 'Developers':
+                        my_group = Group.objects.get(name='Developers') 
+                        my_group.user_set.add(user)
                     # username = form.cleaned_data.get('username')
                     #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False

@@ -29,7 +29,7 @@ urlpatterns = [
     path('webshop/accounts/', include('django.contrib.auth.urls')),
     path('webshop/accounts/', include('allauth.urls')),
     path('webshop/profile/', profile, name='profile'),
-    path('webshop/edit_profile', edit_profile, name='edit_profile'),
+    path('webshop/edit_profile/', edit_profile, name='edit_profile'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
 
     

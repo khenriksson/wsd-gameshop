@@ -30,14 +30,13 @@ var searchClick = function() {
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav mr-auto">
           {% if user.is_authenticated %}
-          <a class="nav-item nav-link" href="/webshop/addgame/"
-            ><span>Add Game</span></a
-          >
-          
+            {% if user.groups.all.0.name == 'Developers' %}
+            <a class="nav-item nav-link" href="/webshop/addgame/"
+              ><span>Add Game</span>
+            </a>
+            {% endif %}
           <a class="nav-item nav-link" href="/webshop/your_games">
 			  <span> Your Games</span></a>
-          
-          
           <a
             class="nav-item nav-link"
             href="{% url 'logout'%}?next={{request.path}}"

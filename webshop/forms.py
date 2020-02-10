@@ -13,6 +13,9 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(label='First name', required=True)
     last_name = forms.CharField(label='Last name', required=True)
     email = forms.CharField(label="Email")
+    group = forms.ChoiceField(choices = (
+    ('Player', 'Player'),
+    ('Developer', 'Developer'),),required = True, label = 'Sign up as:')
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
