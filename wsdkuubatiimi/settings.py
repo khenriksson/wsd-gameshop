@@ -100,9 +100,8 @@ WSGI_APPLICATION = 'wsdkuubatiimi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES['default'] = dj_database_url.config(default='postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5',conn_max_age=600, ssl_require=True) 
 
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -111,10 +110,10 @@ DATABASES = {
         'PASSWORD': '746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de',
         'HOST': 'ec2-54-235-181-55.compute-1.amazonaws.com',
         'PORT': '5432',
-        'URI':'postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5',
     }
 }
-'''
+#DATABASES['default'] = dj_database_url.config(default='postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5',conn_max_age=600, ssl_require=True) 
+
 
 '''
 DATABASES = {
