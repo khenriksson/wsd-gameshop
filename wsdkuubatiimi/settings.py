@@ -14,7 +14,7 @@ import os
 
 #Heroku deployment
 import django_heroku
-import dj_database_url
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +29,7 @@ SECRET_KEY = '^k31#^w)mzxk5*(uvu+h$aiouu@&lv2r*r@t)k1!o3dwzgxr1o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1','powerful-wildwood-65729.herokuapp.com']
 
 
 # Application definition
@@ -114,8 +114,13 @@ DATABASES = {
 }
 
 #DATABASES['default'] = dj_database_url.config(default='postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5',conn_max_age=600, ssl_require=True) 
-DATABASES['default'] =  dj_database_url.config('postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5')
 
+'''
+print(dj_database_url.config('ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5'))
+DATABASES={
+	'default':dj_database_url.config('postgres://ameydzzovvqumw:746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d3716kdviu8oh5')
+	}
+'''
 
 '''
 DATABASES = {

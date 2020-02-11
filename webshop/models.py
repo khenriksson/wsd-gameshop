@@ -8,8 +8,8 @@ from hashlib import md5
 
 import datetime
 # Create your models here.
-
 developers, created = Group.objects.get_or_create(name='Developers')
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
