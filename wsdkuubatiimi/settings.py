@@ -25,7 +25,7 @@ SECRET_KEY = '^k31#^w)mzxk5*(uvu+h$aiouu@&lv2r*r@t)k1!o3dwzgxr1o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [ 'localhost']
 
 
 # Application definition
@@ -135,10 +135,10 @@ LOGIN_REDIRECT_URL = '/webshop/'
 
 AUTHENTICATION_BACKENDS = (
 'django.contrib.auth.backends.ModelBackend',
-# 'allauth.account.auth_backends.AuthenticationBackend',
+'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 1
+SITE_ID = 1 # This one gives the 'domain' as 'example.com'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True

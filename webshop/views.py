@@ -348,7 +348,7 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
     else:
         return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
@@ -370,7 +370,7 @@ def payment(request, game_id):
  
     owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
     own = Game.objects.filter(developer=buyer).exists()
-    
+
     if not owned:
         if own:
             return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
