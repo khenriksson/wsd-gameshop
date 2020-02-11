@@ -404,8 +404,8 @@ def payment(request, game_id):
                     'cancel_url': domain + '/payment/cancel',
                     'error_url': domain + '/payment/error'})
 
-                    'cancel_url':  domain + '/payment/cancel',
-                    'error_url':  domain + '/payment/error'})
+#                    'cancel_url':  domain + '/payment/cancel',
+#                    'error_url':  domain + '/payment/error'})
 
 
             except IntegrityError:
