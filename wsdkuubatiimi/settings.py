@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.sites',
+    
     
     'bootstrap4',
     'webshop',
@@ -98,14 +98,26 @@ WSGI_APPLICATION = 'wsdkuubatiimi.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd3716kdviu8oh5',
+        'USER': 'ameydzzovvqumw',
+        'PASSWORD': '746d9d20a679fa982e4135339027396e90072da1109564d627c3808a7c6097de',
+        'HOST': 'ec2-54-235-181-55.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
 
+
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
