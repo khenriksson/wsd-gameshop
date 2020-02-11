@@ -1,79 +1,52 @@
-{% extends "base.html" %}
-{% block content %}
-{% load static %}
+{% extends "base.html" %} {% block content %} {% load static %}
 
 <h2>Your owned games</h2>
 {%if own_games%}
 <table class="table">
-	<thead>
-	 <tr>
+  <thead>
+    <tr>
       <th scope="col">Game title:</th>
       <th scope="col">Price:</th>
       <th scope="col">Bought:</th>
-
     </tr>
-	</thead>
-	<tbody>
-{%for key,value in own_games.items%}
-{%for k, val in value.items%}
-<tr>
-<th>{{val.title}}</th>
-<td>{{val.price}}</td>
-<td>{{val.times_bought}}</td>
-<td>
-	
+  </thead>
+  <tbody>
+    {%for key,value in own_games.items%} {%for k, val in value.items%}
+    <tr>
+      <th>{{val.title}}</th>
+      <td>{{val.price}}</td>
+      <td>{{val.times_bought}}</td>
+    </tr>
 
-</tr>
-
-
-
-{%endfor%}
-{%endfor%}
-
-{%else%}
-You dont have games
-{%endif%}
-</tbody>
+    {%endfor%} {%endfor%} {%else%} You dont have games {%endif%}
+  </tbody>
 </table>
-<br>
+<br />
 {%if data%}
 <h2>You are developer of these games:</h2>
 
-
-
 <table class="table">
-	<thead>
-	 <tr>
+  <thead>
+    <tr>
       <th scope="col">Game title:</th>
       <th scope="col">Price:</th>
       <th scope="col">Bought:</th>
       <th scope="col">Modify the game:</th>
     </tr>
-	</thead>
-	<tbody>
-{%for key,value in data.items%}
-{%for k, val in value.items%}
-<tr>
-<th>{{val.title}}</th>
-<td>{{val.price}}</td>
-<td>{{val.times_bought}}</td>
-<td>
-	
-	<a href="/webshop/game{{val.id}}">Modify {{val.title}}</a></td>
-</tr>
+  </thead>
+  <tbody>
+    {%for key,value in data.items%} {%for k, val in value.items%}
+    <tr>
+      <th>{{val.title}}</th>
+      <td>{{val.price}}</td>
+      <td>{{val.times_bought}}</td>
+      <td>
+        <a href="/webshop/game{{val.id}}">Modify {{val.title}}</a>
+      </td>
+    </tr>
 
-
-
-{%endfor%}
-
-{%endfor%}
-{%endif%}
-
-</tbody>
+    {%endfor%} {%endfor%} {%endif%}
+  </tbody>
 </table>
-
-
-
-
 
 {%endblock%}

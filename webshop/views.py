@@ -353,7 +353,7 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
     else:
         return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
@@ -375,8 +375,7 @@ def payment(request, game_id):
  
     owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
     own = Game.objects.filter(developer=buyer).exists()
-    print(own)
-    print("owned " + str(owned))
+
     if not owned:
         if own:
             return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
@@ -391,12 +390,15 @@ def payment(request, game_id):
                     checksum = md5(checksumstr.encode('utf-8')).hexdigest()
                     payment.save()
                     bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
+                    domain = str(get_current_site(request))
+                    print(domain)
                     query = urlencode({
                     'pid': pid, 'sid': sid, 'amount': amount,
                     'checksum': checksum,
-                    'success_url': 'http://localhost:8000/payment/success',
-                    'cancel_url': 'http://localhost:8000/payment/cancel',
-                    'error_url': 'http://localhost:8000/payment/error'})
+                    'success_url': 'https://' + domain + '/payment/success',
+                    'cancel_url': 'https://' + domain + '/payment/cancel',
+                    'error_url': 'https://' + domain + '/payment/error'})
+
             except IntegrityError:
                 return render(request, 'payment/error.html',{'error':"You already own the game."})
     else:
