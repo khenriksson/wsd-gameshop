@@ -390,14 +390,14 @@ def payment(request, game_id):
                     checksum = md5(checksumstr.encode('utf-8')).hexdigest()
                     payment.save()
                     bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
-                    domain = str(get_current_site(request))
+                    domain ='https://' + str(get_current_site(request))
                     print(domain)
                     query = urlencode({
                     'pid': pid, 'sid': sid, 'amount': amount,
                     'checksum': checksum,
-                    'success_url': 'https://' + domain + '/payment/success',
-                    'cancel_url': 'https://' + domain + '/payment/cancel',
-                    'error_url': 'https://' + domain + '/payment/error'})
+                    'success_url':  domain + '/payment/success',
+                    'cancel_url': domain + '/payment/cancel',
+                    'error_url': domain + '/payment/error'})
 
             except IntegrityError:
                 return render(request, 'payment/error.html',{'error':"You already own the game."})
