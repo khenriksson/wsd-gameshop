@@ -1,71 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 
-<script>
-  /* global $ */
-  $(document).ready(function () {
-    'use strict';
-    window.addEventListener('message', function (evt) {
-      //Note that messages from all origins are accepted
-      //Get data from sent message
-      var data = evt.data;
-      //var gameState = {};
-      if (data.messageType == "SETTING") {
-        $('iframe').width(data.options.width);
-        $('iframe').height(data.options.height);
-      };
-      if (data.messageType == "SCORE") {
-        $('#score').empty();
-        $('#score').append(data.score);
-      };
-      if (data.messageType == "SAVE") {
-        var gameState = data.gameState;
-        $('#actions').empty();
-        $('#actions').append("Saved");
-        //$('#actions').append(gameState);
-      };
-      if (data.messageType == "LOAD_REQUEST") {
-        /*if (NO SAVED GAMESTATE) {
-          $('#actions').empty();
-          $('#actions').append("No game state saved - could not load");
-        }
-        else {*/
-        // NOTE dummy data for testing load
-        var gameState = {
-          "playerItems": ['stone'],
-          "score": 50.0
-        };
-        var message = {
-          messageType: "LOAD", gameState
-        };
-        var frame = document.getElementById('gameframe');
-        frame.contentWindow.postMessage(message, "*");
-        $('#actions').empty();
-        $('#actions').append("Loaded");
-        //}
-      };
-    });
-  });
 
-</script>
 
 <div>
-
-  <h2>Title: {{game.game_title}}</h2>
-  <h2>Game id: {{game.id}}</h2>
+  <script type="text/javascript">
+    gameID = "{{game.pk}}";
+    user = "{{request.user}";
+    top10 = "{{top10}}";
+  </script>
+  <script  type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
   {% if user.is_authenticated %}
-  <h2>Player: {{user.username}}</h2>
+  
+  <div id="game_topbox">
+    <h2>You are playing <strong>{{game.game_title}}</strong></h2>
+    <h4>Game developed by {{game.developer}}</h4>
+    <p>{{game.description}}</p>
+    
+  </div>
   <!-- Not done - add 'if' to check if game has been bought-->
   <div id="iframe">
+  {% if test == 'yes' %}
+  
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
   </div>
-  <div>Score: <span id="score">0</span></div>
+  <div id="iframe">
+  <div>Your current score: <span id="score">0</span></div>
   <div>Actions: <span id="actions"></span></div>
+  <div>Highscores:<ul id="highscores"></ul></div>
+
+
+  {% else %}
+
+      <img
+      class="card-img-top im-fluid"
+      src="{{game.picture_url}}"
+      alt="Card image cap"
+    />
+    
+    <button onclick="location.href='{% url 'payment' game.id %}';" class="btn btn-success pull-right">Buy</button>
+  {% endif %}
+  <div>Times bought:<ul>{{game.times_bought}}</ul></div>
+  </div>
 </div>
 {% else %}
-<div>
-  <p>Log in to buy and play the game :)</p>
-  <img class="card-img-top" src="{{game.picture_url}}" alt="Card image cap" />
+<div id="game_topbox">
+  <h4>Log in to buy and play<br>{{game.game_title}}</h4>
+  <a href="/webshop/accounts/login/" class="btn btn-outline-dark">Log in</a>
+  <p>Don't have an account yet?</p>
+  <a href="/webshop/signup/" class="btn btn-dark">Sign up</a><br>
+  <img id="game_imgbox" class="card-img-top" src="{{game.picture_url}}" alt="Card image cap" />
 </div>
 {% endif %}
 </div>

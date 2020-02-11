@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block content %}
+<script>
+    function redirect(){
+       window.location.href = "/webshop/";
+    }
+    setTimeout(redirect, 4000); 
+</script>
+{{text}}
+<p>We'll redirect you to the frontimport page in 3 seconds.</p>
+{% endblock %}

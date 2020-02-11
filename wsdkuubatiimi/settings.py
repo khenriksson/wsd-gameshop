@@ -28,7 +28,7 @@ SECRET_KEY = '^k31#^w)mzxk5*(uvu+h$aiouu@&lv2r*r@t)k1!o3dwzgxr1o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -43,11 +43,18 @@ INSTALLED_APPS = [
     
     'bootstrap4',
     'webshop',
+
     'django_heroku',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 
-	'allauth',
+
+    'rest_framework',
+    'django.contrib.sites',
+    
+    
+	
+    'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
@@ -124,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Helsinki'
 
 USE_I18N = True
 
@@ -139,6 +146,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/webshop/'
+<<<<<<< HEAD
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
 
 #applying 3rd party login --- allauth
@@ -157,3 +165,37 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 django_heroku.settings(locals())
+=======
+
+
+AUTHENTICATION_BACKENDS = (
+'django.contrib.auth.backends.ModelBackend',
+# 'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+
+
+
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '0312464b1101aa'
+EMAIL_HOST_PASSWORD = '0b3a8c33a71c6e'
+EMAIL_PORT = '2525'
+>>>>>>> c363261f18470a6d1af86450b0590129c04ff28e

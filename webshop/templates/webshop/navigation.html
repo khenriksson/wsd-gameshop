@@ -1,8 +1,13 @@
 <script>
 var searchClick = function() {
     var text = document.getElementById("navbar-form").value;
-    window.location.href = "/webshop/search/" + text;
-}
+    if (text) {
+      window.location.href = "/webshop/search/" + text;
+    }
+    else {
+      window.location.href = "/webshop/"
+    }
+  }
 </script>
 
 
@@ -24,11 +29,14 @@ var searchClick = function() {
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav mr-auto">
-          <a class="nav-item nav-link" href="#">page 3</a>
           {% if user.is_authenticated %}
-          <a class="nav-item nav-link" href="/webshop/addgame/"
-            ><span>Add Game</span></a
-          >
+            {% if user.groups.all.0.name == 'Developers' %}
+            <a class="nav-item nav-link" href="/webshop/addgame/"
+              ><span>Add Game</span>
+            </a>
+            {% endif %}
+          <a class="nav-item nav-link" href="/webshop/your_games">
+			  <span> Your Games</span></a>
           <a
             class="nav-item nav-link"
             href="{% url 'logout'%}?next={{request.path}}"

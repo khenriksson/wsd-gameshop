@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from webshop.views import *
+from webshop import views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,8 +29,34 @@ urlpatterns = [
     path('webshop/accounts/', include('django.contrib.auth.urls')),
     path('webshop/accounts/', include('allauth.urls')),
     path('webshop/profile/', profile, name='profile'),
+
     #path('webshop/gameplay/', gameplay, name='gameplay'),   
     path('webshop/payment/', payment, name='payment'),
+
+    path('webshop/edit_profile/', edit_profile, name='edit_profile'),
+
     path('webshop/search/<str:search_text>', search_games, name='search'),
-    path('webshop/edit_profile', edit_profile, name='edit_profile'),
+
+    
+    path('activate/<uidb64>/<token>/', activate, name='activate' ),
+
+    #Payment Urls
+    path('webshop/payment/<game_id>/', payment, name='payment'),
+    path('payment/error/', error, name='error'),
+    path('payment/cancel/', cancel, name='cancel'),
+    path('payment/success/', success, name='success'),
+    path('payment/owned/', payment, name='payment'),
+
+
+	#Modifying and removing a game
+    path('webshop/your_games', your_games, name='your_games'),
+    path('webshop/game<int:value>', game, name='game'),
+    path('webshop/removegame/<int:value>',remove_game,name="remove_game"),
+    
+    
+    path("webshop/savegame/", views.savegame, name='savegame'),
+    path('webshop/loadgame/', views.loadgame, name='loadgame'),
+    path('webshop/savescore/', views.savescore, name='savescore'),
+    path('webshop/highscore/', views.highscore, name='highscore'),
 ]
+handler404=chandler404

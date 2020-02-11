@@ -1,29 +1,14 @@
 {% extends "base.html" %}{% block content %}
 
-<form
-  action="https://tilkkutakki.cs.aalto.fi/payments/pay?pid=x5wmEqhw32FtTss&sid=veg4bGthc3Blcg==&amount=9.95&checksum=4dcd406dca0a2fe61f38db186299f30d&success_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fsuccess&cancel_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Fcancel&error_url=http%3A%2F%2Flocalhost%3A8000%2Fpayment%2Ferror"
-  method="POST"
->
-  <input type="hidden" name="pid" value="x5wmEqhw32FtTss" />
-  <input type="hidden" name="sid" value="veg4bGthc3Blcg==" />
-  <input type="hidden" name="amount" value="9.95" />
-  <input
-    type="hidden"
-    name="success_url"
-    value="http://localhost:8000/payment/success"
-  />
-  <input
-    type="hidden"
-    name="cancel_url"
-    value="http://localhost:8000/payment/cancel"
-  />
-  <input
-    type="hidden"
-    name="error_url"
-    value="http://localhost:8000/payment/error"
-  />
-  <input type="hidden" name="checksum" value="{}" />
+<form action="https://tilkkutakki.cs.aalto.fi/payments/pay" method="POST">
+  <input type="hidden" name="pid" value="{{pid}}">
+  <input type="hidden" name="sid" value="{{sid}}">
+  <input type="hidden" name="amount" value="{{amount}}">
+  <input type="hidden" name="success_url" value="http://localhost:8000/payment/success">
+  <input type="hidden" name="cancel_url" value="http://localhost:8000/payment/cancel">
+  <input type="hidden" name="error_url" value="http://localhost:8000/payment/error">
+  <input type="hidden" name="checksum"value="{{checksum}}">
   Amount to be paid 9.95¤
-  <input type="submit" value="Pay" />
+  <input type="submit" value="Pay">
 </form>
 {% endblock %}

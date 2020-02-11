@@ -21,15 +21,7 @@ body {
 #sticky-footer {
   flex-shrink: none;
 }
-/* footer {
-  position: fixed;
-  height: 50px;
-  background-color: red;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  margin-bottom: 0px;
-} */
+
 
 #container {
   min-height: 100%;
@@ -53,7 +45,24 @@ body {
   width: 80%;
 }
 
+#game_topbox {
+  position: relative;
+
+  margin: 5% 10% 5% 10%;
+}
+
+#game_imgbox {
+  position: relative;
+  margin-top: 20px;
+  max-width: 500px;
+  width: 100%;
+  
+}
+
 /* Other Classes for Page Styling */
 .card-style  {
-  margin: 100;
+  margin: 200;
+
 }
+
+
