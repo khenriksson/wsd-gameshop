@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, Permission
 
 from hashlib import md5
 
@@ -8,6 +9,7 @@ from hashlib import md5
 import datetime
 # Create your models here.
 
+developers, created = Group.objects.get_or_create(name='Developers')
 
 class UserProfile(models.Model):
     user = models.OneToOneField(

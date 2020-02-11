@@ -3,7 +3,7 @@
 {% if user.is_authenticated %}
 <h1>Edit Profile</h1>
 <p>Username: {{ user.get_username }}</p>
-<form method="POST" action="/webshop/edit_profile" class="" >
+<form method="POST" action="/webshop/edit_profile/" class="" >
     {% csrf_token %}
     {{ form.as_table }}
     <button type="submit">Save</button>
