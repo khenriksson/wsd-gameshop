@@ -146,7 +146,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/webshop/'
-<<<<<<< HEAD
+
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
 
 #applying 3rd party login --- allauth
