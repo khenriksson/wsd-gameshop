@@ -370,8 +370,7 @@ def payment(request, game_id):
  
     owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
     own = Game.objects.filter(developer=buyer).exists()
-    print(own)
-    print("owned " + str(owned))
+    
     if not owned:
         if own:
             return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
