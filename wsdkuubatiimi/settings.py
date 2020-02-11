@@ -29,7 +29,7 @@ SECRET_KEY = '^k31#^w)mzxk5*(uvu+h$aiouu@&lv2r*r@t)k1!o3dwzgxr1o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1','powerful-wildwood-65729.herokuapp.com']
+ALLOWED_HOSTS = ['powerful-wildwood-65729.herokuapp.com']
 
 
 # Application definition
