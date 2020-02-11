@@ -22,7 +22,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', webshop, name='index'),
+    path('webshop/', webshop, name='index'),
     path("webshop/<int:game_id>/", detail, name='detail'),
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
