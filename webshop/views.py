@@ -39,7 +39,6 @@ def webshop(request):
 
 def search_games(request, search_text):
     filtered_games = []
-    '''search_text = "test"'''
     for game in Game.objects.all():
         if search_text in game.game_title:
             filtered_games.append(game)
