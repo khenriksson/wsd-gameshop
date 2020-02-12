@@ -76,14 +76,14 @@ def signup(request):
                 form = SignUpForm(request.POST)
                 if form.is_valid():
                     user = form.save(commit=False)
-                    group = request.POST.get('group')
-                    if group == 'Developers':
-                        my_group = Group.objects.get(name='Developers') 
-                        my_group.user_set.add(user)
                     # username = form.cleaned_data.get('username')
                     #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False
                     user.save()
+                    is_dev = request.POST.get('is_developer')
+                    if is_dev:
+                        my_group, created = Group.objects.get_or_create(name='Developers') 
+                        my_group.user_set.add(user)
                     current_site = get_current_site(request)
                     # Sending the confirmation email
                     subject = 'Activate your account.'
@@ -301,7 +301,11 @@ def chandler404(request,exception,template='webshop/404.html'):
 	response.status_code=404
 	return response
 
-	
+def update_dev(request):
+    my_group, created = Group.objects.get_or_create(name='Developers') 
+    my_group.user_set.add(request.user)
+    return redirect('profile')
+
 
 	
 	
@@ -314,6 +318,7 @@ def edit_profile(request):
                 user.first_name = request.POST['first_name']
                 user.last_name = request.POST['last_name']
                 user.email = request.POST['email']
+                user.is_developer = request.POST['is_developer']
                 user.save()
                 return redirect('profile')
         context = {

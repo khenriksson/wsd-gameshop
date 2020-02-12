@@ -13,12 +13,12 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(label='First name', required=True)
     last_name = forms.CharField(label='Last name', required=True)
     email = forms.CharField(label="Email")
-    group = forms.ChoiceField(choices = (
-    ('Player', 'Player'),
-    ('Developer', 'Developer'),),required = True, label = 'Sign up as:')
+    is_developer = forms.ChoiceField(choices = (
+    (False, 'No, just as a player'),
+    (True, 'Yes, I´d like to sell my own games'),),required = True, label = 'Do you want to sign up as a developer?')
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'is_developer', 'password1', 'password2')
 
 class EditProfileForm(forms.ModelForm):
     first_name = forms.CharField(label='First Name')
