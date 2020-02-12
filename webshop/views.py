@@ -80,8 +80,8 @@ def signup(request):
                     #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False
                     user.save()
-                    is_dev = request.POST.get('is_developer')
-                    if is_dev:
+                    is_dev = form.cleaned_data.get('is_dev')
+                    if is_dev == 'Developer':
                         my_group, created = Group.objects.get_or_create(name='Developers') 
                         my_group.user_set.add(user)
                     current_site = get_current_site(request)
