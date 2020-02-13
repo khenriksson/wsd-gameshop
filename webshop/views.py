@@ -28,7 +28,7 @@ from .tokens import account_activation_token
 
 
 
-
+# Rendering front page
 def webshop(request):
     all_games = Game.objects.all()
     template = loader.get_template('webshop/index.html')
@@ -37,6 +37,7 @@ def webshop(request):
     }
     return HttpResponse(template.render(context, request))
 
+# Rendering games filtered based on a search from the navbar
 def search_games(request, search_text):
     filtered_games = []
     for game in Game.objects.all():
@@ -52,7 +53,7 @@ def search_games(request, search_text):
         return HttpResponse(template.render(context, request))
     
 
-
+#
 def detail(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
@@ -75,16 +76,15 @@ def signup(request):
                 form = SignUpForm(request.POST)
                 if form.is_valid():
                     user = form.save(commit=False)
-                    # username = form.cleaned_data.get('username')
-                    #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False
                     user.save()
+                    # Adding user to group Developers based on form selection
                     is_dev = form.cleaned_data.get('is_dev')
                     if is_dev == 'Developer':
                         my_group, created = Group.objects.get_or_create(name='Developers') 
                         my_group.user_set.add(user)
-                    current_site = get_current_site(request)
                     # Sending the confirmation email
+                    current_site = get_current_site(request)
                     subject = 'Activate your account.'
                     message = render_to_string('webshop/activate_email.html', {
                         'user': user,
@@ -103,7 +103,6 @@ def signup(request):
     
 
 def addgame(request):
-    
     if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
         game = Game()
         user = request.user
@@ -119,49 +118,59 @@ def addgame(request):
         return render(request, 'webshop/addgame.html', {'form': form})
     else: return redirect('index')
 
+# Handling the request to save a gamestate 
 def savegame(request):
     if request.method == 'POST':
         game = request.POST['gameID']
         user = request.user
         gameInfo = request.POST['gameState']
         try:
+            # If a previous gamestate is saved for the user in the game, overwrite it
             gameData = GameData.objects.get(game = game,
             user = user)
             gameData.gameInfo = gameInfo
             gameData.save()
         except:
+            # If no previous saved gamestate exists, creating a new GameData object and saving it
             gameData = GameData(game = game, user = user,
             gameInfo = gameInfo)
             gameData.save()
     return HttpResponse("data saved")
 
+# Handling the request to load a previously saved gamestate
 def loadgame(request):
     if request.method == 'POST':
         game = request.POST['gameID']
         user = request.user
         try:
+            # If a gamestate can be found
             gameData = GameData.objects.get(game = game, user = user)
             gameState = gameData.gameInfo
         except:
+            # If no saved gamestate exists
             gameState = ''
     return HttpResponse(gameState)
 
+# Handling the request to save a score from a game
 def savescore(request):
     if request.method == 'POST':
         game = request.POST['gameID']
         score = request.POST['score']
         user = request.user
         try:
+            # If a previous score exists for the user, check if the current score is higher
             gameData = GameData.objects.get(game = game,
             user = user)
             if (int(score) > gameData.score):
                 gameData.score = score
                 gameData.save()
         except:
+            # If no previous score exists, saving a new GameData object
             gameData = GameData(game = game, user = user, score = score)
             gameData.save()
     return HttpResponse("score saved")
 
+# Retreiving the top 10 scores from GameData objects
 def highscore(request):
     if request.method == 'GET':
         game = request.GET['gameID']
@@ -295,14 +304,13 @@ def chandler404(request,exception,template='webshop/404.html'):
 	response.status_code=404
 	return response
 
+# Updating a user's status by adding them to the Group 'Developers'
 def update_dev(request):
     my_group, created = Group.objects.get_or_create(name='Developers') 
     my_group.user_set.add(request.user)
     return redirect('profile')
 
-
-	
-	
+# Handling the request to edit a user's personal information sent through an EditProfileForm
 def edit_profile(request):
     if request.user.is_authenticated:
         user = request.user

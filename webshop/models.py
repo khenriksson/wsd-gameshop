@@ -45,6 +45,7 @@ class Wallet(models.Model):
     def __str__(self):
         return self.owner
 
+# Class used for saving highscores and gamestates
 class GameData(models.Model):
     game = models.IntegerField()
     user = models.TextField()
