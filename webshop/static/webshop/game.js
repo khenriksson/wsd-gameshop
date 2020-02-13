@@ -103,12 +103,12 @@ function showHighscores() {
             if (json) {
                 // Adding the top 10's users and scores to a list
                 top10data = JSON.parse(json)
+                $('#highscores').empty();
                 $.each(top10data, function () {
                     var user = this.fields.user;
                     var score = this.fields.score;
                     var listItem = '\n\t<li>' + user + ": " + score + '</li>';
-                    $('#highscores').empty();
-                    $('#highscores').prepend(listItem);
+                    $('#highscores').append(listItem);
                 });
             }
         }
