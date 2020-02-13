@@ -34,7 +34,11 @@ urlpatterns = [
     path('webshop/payment/', payment, name='payment'),
 
     path('webshop/edit_profile/', edit_profile, name='edit_profile'),
+<<<<<<< HEAD
 
+=======
+    path('webshop/update_dev/', update_dev, name='update_dev'),
+>>>>>>> master
     path('webshop/search/<str:search_text>', search_games, name='search'),
 
     

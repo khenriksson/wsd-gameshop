@@ -39,7 +39,6 @@ def webshop(request):
 
 def search_games(request, search_text):
     filtered_games = []
-    '''search_text = "test"'''
     for game in Game.objects.all():
         if search_text in game.game_title:
             filtered_games.append(game)
@@ -76,14 +75,14 @@ def signup(request):
                 form = SignUpForm(request.POST)
                 if form.is_valid():
                     user = form.save(commit=False)
-                    group = request.POST.get('group')
-                    if group == 'Developers':
-                        my_group = Group.objects.get(name='Developers') 
-                        my_group.user_set.add(user)
                     # username = form.cleaned_data.get('username')
                     #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     user.is_active = False
                     user.save()
+                    is_dev = form.cleaned_data.get('is_dev')
+                    if is_dev == 'Developer':
+                        my_group, created = Group.objects.get_or_create(name='Developers') 
+                        my_group.user_set.add(user)
                     current_site = get_current_site(request)
                     # Sending the confirmation email
                     subject = 'Activate your account.'
@@ -105,8 +104,7 @@ def signup(request):
 
 def addgame(request):
     
-    if request.user.is_authenticated:
-
+    if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
         game = Game()
         user = request.user
         if request.method == 'POST':
@@ -114,8 +112,6 @@ def addgame(request):
             if form.is_valid():
                 game = form.save(commit = False)
                 game.developer = user
-                #game.picture_url='https://store-images.s-microsoft.com/image/apps.58949.14571142807322667.df9fc94b-3bd3-4ec2-b7a2-423331d84b17.5883e11e-8555-4114-83b7-72d1cb12cd6e?mode=scale&q=90&h=1080&w=1920'
-                
                 game.save()
                 return redirect('index')   
         else:
@@ -143,7 +139,6 @@ def loadgame(request):
     if request.method == 'POST':
         game = request.POST['gameID']
         user = request.user
-        #Need to add: checking if loaded state exists
         try:
             gameData = GameData.objects.get(game = game, user = user)
             gameState = gameData.gameInfo
@@ -170,8 +165,7 @@ def savescore(request):
 def highscore(request):
     if request.method == 'GET':
         game = request.GET['gameID']
-        #testing with only top1
-        filtered = GameData.objects.filter(game=game).order_by('-score')[:3]
+        filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
         top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
     return HttpResponse(json.dumps(top10), content_type="application/json")
 
@@ -301,7 +295,11 @@ def chandler404(request,exception,template='webshop/404.html'):
 	response.status_code=404
 	return response
 
-	
+def update_dev(request):
+    my_group, created = Group.objects.get_or_create(name='Developers') 
+    my_group.user_set.add(request.user)
+    return redirect('profile')
+
 
 	
 	
