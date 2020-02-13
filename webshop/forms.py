@@ -13,13 +13,14 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(label='First name', required=True)
     last_name = forms.CharField(label='Last name', required=True)
     email = forms.CharField(label="Email")
-    group = forms.ChoiceField(choices = (
+    is_dev = forms.ChoiceField(choices = (
     ('Player', 'Player'),
-    ('Developer', 'Developer'),),required = True, label = 'Sign up as:')
+    ('Developer', 'Developer'),),required = True, label = 'Do you want to sign up as a player or developer?')
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'is_dev', 'password1', 'password2')
 
+# Form used for editing a user's personal information
 class EditProfileForm(forms.ModelForm):
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
@@ -39,6 +40,7 @@ class AddGameForm(forms.ModelForm):
         model = Game
 
         fields = ('game_title', 'game_url', 'picture_url', 'price')
+
 ##Form for Editing a game.
 class EditGame(forms.ModelForm):	
     

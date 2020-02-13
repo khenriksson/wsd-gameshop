@@ -20,7 +20,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=30, default="")
     last_name = models.CharField(max_length=30, default="")
     email = models.EmailField(max_length=254)
-
+    #is_developer = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
@@ -45,6 +45,7 @@ class Wallet(models.Model):
     def __str__(self):
         return self.owner
 
+# Class used for saving highscores and gamestates
 class GameData(models.Model):
     game = models.IntegerField()
     user = models.TextField()
