@@ -47,76 +47,77 @@ function loadStates() {
         data: {
             gameID: gameID,
             csrfmiddlewaretoken: csrftoken
-    },
-       success: function (json) {
-        if (json) {
-            var gameState = JSON.parse(json);
-            var msg = {};
-            msg.messageType = "LOAD";
-            msg.gameState = gameState;
-            var frame = document.getElementById('gameframe');
-            frame.contentWindow.postMessage(msg, "*");
-            $('#actions').empty();
-            $('#actions').append("Loaded your previously saved gamestate");
-        }
-        else {
-            // If no saved gamestate is found, notifying the user
-            $('#actions').empty();
-            $('#actions').append("No gamestate saved - could not load");
-        }
+        },
+        success: function (json) {
+            if (json) {
+                var gameState = JSON.parse(json);
+                var msg = {};
+                msg.messageType = "LOAD";
+                msg.gameState = gameState;
+                var frame = document.getElementById('gameframe');
+                frame.contentWindow.postMessage(msg, "*");
+                $('#actions').empty();
+                $('#actions').append("Loaded your previously saved gamestate");
+            }
+            else {
+                // If no saved gamestate is found, notifying the user
+                $('#actions').empty();
+                $('#actions').append("No gamestate saved - could not load");
+            }
         }
     });
 }
 
-function saveScore(score){
+function saveScore(score) {
     // Saving the user's current score with an ajax POST request
-    var destination = domain() + "/webshop/savescore/"; 
-    var csrftoken = getCookie('csrftoken'); 
+    var destination = domain() + "/webshop/savescore/";
+    var csrftoken = getCookie('csrftoken');
 
     $.ajax({
-      url : destination,
-      type : "POST",
-      data : {
-        gameID : gameID,
-        score : score,
-        csrfmiddlewaretoken: csrftoken
-    },
-       success : function(json) {
-        $('#score').empty();
-        $('#score').append(score);
-        $('#actions').empty();
-        $('#actions').append("Your score was saved!");
-     }
-   });
-  }
+        url: destination,
+        type: "POST",
+        data: {
+            gameID: gameID,
+            score: score,
+            csrfmiddlewaretoken: csrftoken
+        },
+        success: function (json) {
+            $('#score').empty();
+            $('#score').append(score);
+            $('#actions').empty();
+            $('#actions').append("Your score was saved!");
+        }
+    });
+}
 
 function showHighscores() {
     // Fetching the top 10 scores of this game from the database with an ajax GET request
     var destination = domain() + "/webshop/highscore/";
-    $.ajax ({
+    $.ajax({
         url: destination,
-        type : "GET",
-        data: { gameID: gameID
-    },
-        success: function(json) {
-        if (json) {
-            // Adding the top 10's users and scores to a list
-            top10data = JSON.parse(json)
-            $.each(top10data, function() {
-                var user = this.fields.user;
-                var score = this.fields.score;
-                var listItem = '\n\t<li>' + user + ": " + score + '</li>';
-                $('#highscores').empty();
-                $('#highscores').prepend(listItem);
-            });
-        }
+        type: "GET",
+        data: {
+            gameID: gameID
+        },
+        success: function (json) {
+            if (json) {
+                // Adding the top 10's users and scores to a list
+                top10data = JSON.parse(json)
+                $.each(top10data, function () {
+                    var user = this.fields.user;
+                    var score = this.fields.score;
+                    var listItem = '\n\t<li>' + user + ": " + score + '</li>';
+                    $('#highscores').empty();
+                    $('#highscores').prepend(listItem);
+                });
+            }
         }
     });
 }
 
-$(document).ready(function() {updateHighscore();});
+$(document).ready(function () { updateHighscore(); });
 // Updating global highscore list every 10 seconds
-function updateHighscore() { 
+function updateHighscore() {
     showHighscores();
     setTimeout(updateHighscore, 10000);
 }

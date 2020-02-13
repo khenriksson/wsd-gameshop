@@ -12,7 +12,10 @@ var searchClick = function() {
 <div class="row">
   <div class="col">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'index' %}">GAMESHOP</a>
+      <a class="navbar-brand" href="{% url 'index' %}">
+        <img id="navbar-logo" src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/apple/237/alien-monster_1f47e.png" alt="">
+        <span id="navbar-text">GAMESHOP</span>
+      </a>
       <button
         class="navbar-toggler"
         type="button"
@@ -55,7 +58,7 @@ var searchClick = function() {
         </div>
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" id="navbar-form" type="search" placeholder="Search for games" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" id="navbar-search" type="button" onclick="searchClick()">Search</button>
+          <button class="btn btn-light my-2 my-sm-0" id="navbar-search" type="button" onclick="searchClick()">Search</button>
         </form>
       </div>
     </nav>
