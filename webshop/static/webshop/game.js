@@ -1,8 +1,5 @@
 function domain() {
-    var url = window.location.href;
-    var arr = url.split("/");
-    var result = arr[0] + "//" + arr[2];
-    return result;
+    return document.location.origin;
 }
 
 // From https://docs.djangoproject.com/en/3.0/ref/csrf/
@@ -12,7 +9,6 @@ function getCookie(name) {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -21,10 +17,9 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-// var csrftoken = getCookie('csrftoken');
 
 function saveStates(gameState) {
-    console.log(domain())
+    // Saving the current gamestate with an ajax POST request
     var destination = domain() + "/webshop/savegame/";
     var csrftoken = getCookie('csrftoken');
     $.ajax({
@@ -36,12 +31,14 @@ function saveStates(gameState) {
             csrfmiddlewaretoken: csrftoken
         },
         success: function (json) {
-            console.log("saved");
+            $('#actions').empty();
+            $('#actions').append("Your gamestate was saved!");
         }
     });
 }
 
 function loadStates() {
+    // Attempting to load a previously saved gamestate for this user in this game
     var destination = domain() + "/webshop/loadgame/";
     var csrftoken = getCookie('csrftoken');
     $.ajax({
@@ -51,30 +48,31 @@ function loadStates() {
             gameID: gameID,
             csrfmiddlewaretoken: csrftoken
     },
-        success: function (json) {
-            if (json) {
-                var gameState = JSON.parse(json);
-                var msg = {};
-                msg.messageType = "LOAD";
-                msg.gameState = gameState;
-                var frame = document.getElementById('gameframe');
-                frame.contentWindow.postMessage(msg, "*");
-                $('#actions').empty();
-                $('#actions').append("Loaded gamestate");
-                console.log("loaded");
-            }
-            else {
-                $('#actions').empty();
-                $('#actions').append("No gamestate saved - could not load");
-                console.log("loading no success");
-            }
+       success: function (json) {
+        if (json) {
+            var gameState = JSON.parse(json);
+            var msg = {};
+            msg.messageType = "LOAD";
+            msg.gameState = gameState;
+            var frame = document.getElementById('gameframe');
+            frame.contentWindow.postMessage(msg, "*");
+            $('#actions').empty();
+            $('#actions').append("Loaded your previously saved gamestate");
+        }
+        else {
+            // If no saved gamestate is found, notifying the user
+            $('#actions').empty();
+            $('#actions').append("No gamestate saved - could not load");
+        }
         }
     });
 }
 
 function saveScore(score){
+    // Saving the user's current score with an ajax POST request
     var destination = domain() + "/webshop/savescore/"; 
     var csrftoken = getCookie('csrftoken'); 
+
     $.ajax({
       url : destination,
       type : "POST",
@@ -84,12 +82,16 @@ function saveScore(score){
         csrfmiddlewaretoken: csrftoken
     },
        success : function(json) {
-           console.log("highscore saved")
+        $('#score').empty();
+        $('#score').append(score);
+        $('#actions').empty();
+        $('#actions').append("Your score was saved!");
      }
    });
   }
 
 function showHighscores() {
+    // Fetching the top 10 scores of this game from the database with an ajax GET request
     var destination = domain() + "/webshop/highscore/";
     $.ajax ({
         url: destination,
@@ -97,16 +99,26 @@ function showHighscores() {
         data: { gameID: gameID
     },
         success: function(json) {
-        top10data = JSON.parse(json)
-        $.each(top10data, function() {
-            var user = this.fields.user;
-            var score = this.fields.score;
-            var listItem = '\n\t<li>' + user + ": " + score + '</li>';
-            console.log(listItem);
-            $('#highscores').prepend(listItem);
-        });
+        if (json) {
+            // Adding the top 10's users and scores to a list
+            top10data = JSON.parse(json)
+            $.each(top10data, function() {
+                var user = this.fields.user;
+                var score = this.fields.score;
+                var listItem = '\n\t<li>' + user + ": " + score + '</li>';
+                $('#highscores').empty();
+                $('#highscores').prepend(listItem);
+            });
+        }
         }
     });
+}
+
+$(document).ready(function() {updateHighscore();});
+// Updating global highscore list every 10 seconds
+function updateHighscore() { 
+    showHighscores();
+    setTimeout(updateHighscore, 10000);
 }
 
 /* global $ */
@@ -126,26 +138,15 @@ $(document).ready(function () {
         if (data.messageType == "SCORE") {
             var score = data.score
             saveScore(score)
-            $('#score').empty();
-            $('#score').append(data.score);
         };
 
         if (data.messageType == "SAVE") {
             var gameState = JSON.stringify(data.gameState);
-            console.log(gameState)
             saveStates(gameState)
-            $('#actions').empty();
-            $('#actions').append("Saved gamestate");
         };
 
         if (data.messageType == "LOAD_REQUEST") {
-            /*if (NO SAVED GAMESTATE) {
-              $('#actions').empty();
-              $('#actions').append("No game state saved - could not load");
-            }
-            else {*/
             loadStates();
-            //}
         };
     });
 });

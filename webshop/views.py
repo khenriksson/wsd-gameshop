@@ -165,8 +165,7 @@ def savescore(request):
 def highscore(request):
     if request.method == 'GET':
         game = request.GET['gameID']
-        #testing with only top1
-        filtered = GameData.objects.filter(game=game).order_by('-score')[:3]
+        filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
         top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
     return HttpResponse(json.dumps(top10), content_type="application/json")
 
