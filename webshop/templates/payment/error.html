@@ -2,6 +2,7 @@
 {% if error %}
 {{error}}
 {% else %}
-<p>There was a problem processing.</p>
+<h1>There was a problem processing.</h1>
+<a class="navbar-brand" href="{% url 'index' %}">Go back to the front page</a>
 {% endif %}
 {% endblock %}

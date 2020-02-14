@@ -7,7 +7,7 @@ from allauth.account.forms import SignupForm
 
 
 
-	
+# Signupform says itself
 class SignUpForm(UserCreationForm):
     username = forms.CharField(label='Username', required=True)
     first_name = forms.CharField(label='First name', required=True)
@@ -29,6 +29,7 @@ class EditProfileForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'email')
 
+# Form used for adding games
 class AddGameForm(forms.ModelForm):
     game_url = forms.URLField(label='Your game URL', required=True)
     picture_url = forms.URLField(label='Your picture URL', required=False)
