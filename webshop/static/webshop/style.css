@@ -1,12 +1,7 @@
 /* Implement CSS here */
 
-nav {
-  position: -webkit-sticky;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 999;
+#navdiv {
+  margin-bottom: 50px;
 }
 
 #navbar-logo {
@@ -18,7 +13,6 @@ html,
 body {
   height: 100%;
   margin-bottom:50px;
-  margin-top: 50px;
 }
 
 #page-content {
