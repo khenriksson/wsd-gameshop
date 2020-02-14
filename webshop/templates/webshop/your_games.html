@@ -15,7 +15,7 @@
     <tr>
       <th>{{val.title}}</th>
       <td>{{val.price}}</td>
-      <td>{{val.times_bought}}</td>
+      <td>{{val.bought}}</td>
     </tr>
 
     {%endfor%} {%endfor%} {%else%} You dont have games {%endif%}
@@ -39,7 +39,7 @@
     <tr>
       <th>{{val.title}}</th>
       <td>{{val.price}}</td>
-      <td>{{val.times_bought}}</td>
+      <td>{{val.bought}}</td>
       <td>
         <a href="/webshop/game{{val.id}}">Modify {{val.title}}</a>
       </td>
