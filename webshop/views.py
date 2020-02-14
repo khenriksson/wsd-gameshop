@@ -276,39 +276,43 @@ def game(request, value):
 	try:
 		owner = Game.objects.get(pk=value).developer
 	except(Game.DoesNotExist):
-		return chandler404
+		raise Http404("No user found")
 	test = owner == request.user
 	if request.user.is_authenticated and test:
-		'''
+		
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
-		'''	
-		#Game excists
-		##Checking if user really has the game.
-		##Getting games that user owns.
-		game=get_object_or_404(Game,pk=value, developer_id=str(request.user.pk)) 
+			print(bool(games['data']))
+			#Game excists
+			##Checking if user really has the game.
+			print("Value: ",value)
+			peli=get_object_or_404(Game,pk=value) 
 		
-		form = EditGame(request.POST or None,initial={'game_title':game.game_title,'description':game.description,'price':game.price,'game_url':game.game_url,'picture_url':game.picture_url})
-		if request.method=='POST':
+			form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
+			if request.method=='POST':
 				
-			## Form is valid and is posted. -Compiling the data to proper format.
-			if form.is_valid():
-				game.game_title = request.POST['game_title']
-				game.description = request.POST['description']
-				game.price = request.POST['price']
-				game.game_url = request.POST['game_url']
-				game.picture_url = request.POST['picture_url']
-				game.save()
-				return redirect('/webshop/your_games')
+				
+				if form.is_valid():
+					
+					for i in ('game_title','description','price','game_url','picture_url'):
+						print(request.POST[i])
+					
+					peli.game_title = request.POST['game_title']
+					peli.description = request.POST['description']
+					peli.price = request.POST['price']
+					peli.game_url = request.POST['game_url']
+					peli.picture_url = request.POST['picture_url']
+					peli.save()
+					return redirect('/webshop/your_games')
+				else: return render(request('webshop/game<int:value>'))
 				
 			
 			context = {
 				"game": form,
 				"val": value
-				}
-						
+				}	
 			return render(request, "webshop/game.html",context)	
 		else:
 			return render(request, "webshop/notyourgame.html")
