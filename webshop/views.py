@@ -266,8 +266,8 @@ def remove_game(request,value):
 def game(request,value):
 	
 	## Note to self: Using Pk as a game value sounds like a bad idea.
-	if request.user.is_authenticated:
-		
+    own = Game.objects.filter(developer=request.user).exists()
+    if request.user.is_authenticated and own:
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
@@ -302,8 +302,8 @@ def game(request,value):
 				}	
 			return render(request, "webshop/game.html",context)	
 		else:
-			return Http404
-	return Http404
+			return Http404  
+    return Http404
 	
 ##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
