@@ -14,11 +14,7 @@
         <a href="/webshop/{{game.id}}/"> {{game.game_title}}</a>
       </h5>
       <p class="card-text">
-        {% if not game.description %}
-          No description available
-        {% else %}
           {{game.description}}
-        {% endif %}
       </p>
       <a href="/webshop/{{game.id}}/" class="btn btn-dark">To the game</a>
     </div>

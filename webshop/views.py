@@ -69,9 +69,13 @@ def detail(request, game_id):
     return render(request, 'webshop/detail.html', {'game': game })
 
 def signup(request):
+    # Quick check for making sure that the user is authenticated when 
+    # clicking the signup button, and if case they're already logged in
+    # it will redirect to the front page
     if request.user.is_authenticated:
         return redirect('index')
     else: 
+        # If the user isn't logged in then redirecting to the signup form
         if request.method == 'POST':
                 form = SignUpForm(request.POST)
                 if form.is_valid():
@@ -84,6 +88,7 @@ def signup(request):
                         my_group, created = Group.objects.get_or_create(name='Developers') 
                         my_group.user_set.add(user)
                     # Sending the confirmation email
+                    # The email backend can be changed in the 
                     current_site = get_current_site(request)
                     subject = 'Activate your account.'
                     message = render_to_string('webshop/activate_email.html', {

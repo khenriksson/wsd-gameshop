@@ -21,6 +21,8 @@ from webshop import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('', webshop, name='index'),
+    path('/', webshop, name='index'),
     path('admin/', admin.site.urls),
     path('', webshop, name='index'),
     path("webshop/<int:game_id>/", detail, name='detail'),
