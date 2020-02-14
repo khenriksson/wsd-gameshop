@@ -88,9 +88,10 @@ def signup(request):
                         my_group, created = Group.objects.get_or_create(name='Developers') 
                         my_group.user_set.add(user)
                     # Sending the confirmation email
-                    # The email backend can be changed in the 
+                    # The email backend can be changed in the settings
                     current_site = get_current_site(request)
                     subject = 'Activate your account.'
+                    # Rendering the message using the token created through tokens.py
                     message = render_to_string('webshop/activate_email.html', {
                         'user': user,
                         'domain': current_site.domain,
@@ -101,13 +102,14 @@ def signup(request):
                     send_email(request, user.email, subject, message)
                     messages.success(request, ('Please Confirm your email to complete registration.'))
                     return render(request, 'webshop/activation.html', {'text': 'Please confirm your email address to complete the registration'})
-                    #redirect('index') 
+        # Else it will return the signup form again in case the POST isn't happening
         else:
             form = SignUpForm()
         return render(request, 'webshop/signup.html', {'form': form})
     
-
+# Function for adding the games, which is only available to developers.
 def addgame(request):
+    # Making sure that they're developers
     if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
         game = Game()
         user = request.user
@@ -190,7 +192,7 @@ def get_user(user):
     except UserProfile.DoesNotExist:
         user = None
     
-
+# Rendering the profile
 def profile(request):
     return render(request, 'webshop/profile.html')
 
