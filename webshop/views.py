@@ -294,11 +294,11 @@ def game(request,value):
 				return redirect('/webshop/your_games')
 				
 			
-		context = {
-			"game": form,
-			"val": value
-			}
-					
+			context = {
+				"game": form,
+				"val": value
+				}
+						
 			return render(request, "webshop/game.html",context)	
 		else:
 			return Http404
