@@ -41,6 +41,7 @@ function saveStates(gameState) {
         success: function (json) {
             $('#actions').empty();
             $('#actions').append("Your gamestate was saved!");
+            alert("Your gamestate was saved!")
         },
         error: function(jqXHR,exception) {
             error(jqXHR.responseText);
@@ -69,6 +70,7 @@ function loadStates() {
                 frame.contentWindow.postMessage(msg, "*");
                 $('#actions').empty();
                 $('#actions').append("Loaded your previously saved gamestate");
+                alert("Your gamestate was loaded successfully!")
             }
             else {
                 // If no saved gamestate is found
@@ -80,6 +82,7 @@ function loadStates() {
                 frame.contentWindow.postMessage(msg, "*");
                 $('#actions').empty();
                 $('#actions').append("No gamestate saved - could not load");
+                alert("No saved gamestate found - could not load")
             }
         },
         error: function(jqXHR,exception) {
@@ -106,6 +109,7 @@ function saveScore(score) {
             $('#score').append(score);
             $('#actions').empty();
             $('#actions').append("Your score was saved!");
+            alert("Score saved successfully!")
         },
         error: function(jqXHR,exception) {
             error(jqXHR.responseText);
