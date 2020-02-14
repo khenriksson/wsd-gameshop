@@ -69,113 +69,116 @@ def detail(request, game_id):
 	return render(request, 'webshop/detail.html', {'game': game })
 
 def signup(request):
-    # Quick check for making sure that the user is authenticated when 
-    # clicking the signup button, and if case they're already logged in
-    # it will redirect to the front page
-    if request.user.is_authenticated:
-        return redirect('index')
-    else: 
-        # If the user isn't logged in then redirecting to the signup form
-        if request.method == 'POST':
-                form = SignUpForm(request.POST)
-                if form.is_valid():
-                    user = form.save(commit=False)
-                    user.is_active = False
-                    user.save()
-                    # Adding user to group Developers based on form selection
-                    is_dev = form.cleaned_data.get('is_dev')
-                    if is_dev == 'Developer':
-                        my_group, created = Group.objects.get_or_create(name='Developers') 
-                        my_group.user_set.add(user)
-                    # Sending the confirmation email
-                    # The email backend can be changed in the settings
-                    current_site = get_current_site(request)
-                    subject = 'Activate your account.'
-                    # Rendering the message using the token created through tokens.py
-                    message = render_to_string('webshop/activate_email.html', {
-                        'user': user,
-                        'domain': current_site.domain,
-                        'uid':urlsafe_base64_encode(force_bytes(user.id)),
-                        'token':account_activation_token.make_token(user),
-                    })
-                    
-                    send_email(request, user.email, subject, message)
-                    messages.success(request, ('Please Confirm your email to complete registration.'))
-                    return render(request, 'webshop/activation.html', {'text': 'Please confirm your email address to complete the registration'})
-        # Else it will return the signup form again in case the POST isn't happening
-        else:
-            form = SignUpForm()
-        return render(request, 'webshop/signup.html', {'form': form})
-    
+	# Quick check for making sure that the user is authenticated when 
+	# clicking the signup button, and if case they're already logged in
+	# it will redirect to the front page
+	if request.user.is_authenticated:
+		return redirect('index')
+	else: 
+		# If the user isn't logged in then redirecting to the signup form
+		if request.method == 'POST':
+				form = SignUpForm(request.POST)
+				if form.is_valid():
+					user = form.save(commit=False)
+					user.is_active = False
+					user.save()
+					# Adding user to group Developers based on form selection
+					is_dev = form.cleaned_data.get('is_dev')
+					if is_dev == 'Developer':
+						my_group, created = Group.objects.get_or_create(name='Developers') 
+						my_group.user_set.add(user)
+					# Sending the confirmation email
+					# The email backend can be changed in the settings
+					current_site = get_current_site(request)
+					subject = 'Activate your account.'
+					# Rendering the message using the token created through tokens.py
+					message = render_to_string('webshop/activate_email.html', {
+						'user': user,
+						'domain': current_site.domain,
+						'uid':urlsafe_base64_encode(force_bytes(user.id)),
+						'token':account_activation_token.make_token(user),
+					})
+					
+					send_email(request, user.email, subject, message)
+					messages.success(request, ('Please Confirm your email to complete registration.'))
+					return render(request, 'webshop/activation.html', {'text': 'Please confirm your email address to complete the registration'})
+		# Else it will return the signup form again in case the POST isn't happening
+		else:
+			form = SignUpForm()
+		return render(request, 'webshop/signup.html', {'form': form})
+	
 # Function for adding the games, which is only available to developers.
 def addgame(request):
-    # Making sure that they're developers
-    if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
-        game = Game()
-        user = request.user
-        if request.method == 'POST':
-            form = AddGameForm(request.POST)
-            if form.is_valid():
-                game = form.save(commit = False)
-                game.developer = user
-                game.save()
-                return redirect('index')   
-        else:
-            form = AddGameForm()
-        return render(request, 'webshop/addgame.html', {'form': form})
-    else: return redirect('index')
+	# Making sure that they're developers
+	## Checking if player is logged in and has developers status
+	if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
+		game = Game()
+		user = request.user
+		## checking if form is posted and is valid.
+		if request.method == 'POST':
+			form = AddGameForm(request.POST)
+			if form.is_valid():
+				game = form.save(commit = False)
+				game.developer = user
+				game.save()
+				return redirect('index')   
+		else:
+			##Sending form to be filled.
+			form = AddGameForm()
+		return render(request, 'webshop/addgame.html', {'form': form})
+	else: return redirect('index')
 
 # Handling the request to save a gamestate 
 def savegame(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        user = request.user
-        gameInfo = request.POST['gameState']
-        try:
-            # If a previous gamestate is saved for the user in the game, overwrite it
-            gameData = GameData.objects.get(game = game,
-            user = user)
-            gameData.gameInfo = gameInfo
-            gameData.save()
-        except:
-            # If no previous saved gamestate exists, creating a new GameData object and saving it
-            gameData = GameData(game = game, user = user,
-            gameInfo = gameInfo)
-            gameData.save()
-    return HttpResponse("data saved")
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		user = request.user
+		gameInfo = request.POST['gameState']
+		try:
+			# If a previous gamestate is saved for the user in the game, overwrite it
+			gameData = GameData.objects.get(game = game,
+			user = user)
+			gameData.gameInfo = gameInfo
+			gameData.save()
+		except:
+			# If no previous saved gamestate exists, creating a new GameData object and saving it
+			gameData = GameData(game = game, user = user,
+			gameInfo = gameInfo)
+			gameData.save()
+	return HttpResponse("data saved")
 
 # Handling the request to load a previously saved gamestate
 def loadgame(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        user = request.user
-        try:
-            # If a gamestate can be found
-            gameData = GameData.objects.get(game = game, user = user)
-            gameState = gameData.gameInfo
-        except:
-            # If no saved gamestate exists
-            gameState = ''
-    return HttpResponse(gameState)
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		user = request.user
+		try:
+			# If a gamestate can be found
+			gameData = GameData.objects.get(game = game, user = user)
+			gameState = gameData.gameInfo
+		except:
+			# If no saved gamestate exists
+			gameState = ''
+	return HttpResponse(gameState)
 
 # Handling the request to save a score from a game
 def savescore(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        score = request.POST['score']
-        user = request.user
-        try:
-            # If a previous score exists for the user, check if the current score is higher
-            gameData = GameData.objects.get(game = game,
-            user = user)
-            if (int(score) > gameData.score):
-                gameData.score = score
-                gameData.save()
-        except:
-            # If no previous score exists, saving a new GameData object
-            gameData = GameData(game = game, user = user, score = score)
-            gameData.save()
-    return HttpResponse("score saved")
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		score = request.POST['score']
+		user = request.user
+		try:
+			# If a previous score exists for the user, check if the current score is higher
+			gameData = GameData.objects.get(game = game,
+			user = user)
+			if (int(score) > gameData.score):
+				gameData.score = score
+				gameData.save()
+		except:
+			# If no previous score exists, saving a new GameData object
+			gameData = GameData(game = game, user = user, score = score)
+			gameData.save()
+	return HttpResponse("score saved")
 
 # Retreiving the top 10 scores from GameData objects
 def highscore(request):
@@ -187,11 +190,11 @@ def highscore(request):
 
 
 def get_user(user):
-    try:
-        user = UserProfile.objects.get(user=user)
-    except UserProfile.DoesNotExist:
-        user = None
-    
+	try:
+		user = UserProfile.objects.get(user=user)
+	except UserProfile.DoesNotExist:
+		user = None
+	
 # Rendering the profile
 def profile(request):
 	return render(request, 'webshop/profile.html')
@@ -204,10 +207,10 @@ def your_games(request):
 	if request.user.is_authenticated:
 		data={}
 		own_games={}	
-			
-		pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+		#Getting all developers games and all games    
+		devgames=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
 		allgames = Game.objects.all()
-		# own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
+		# Does user own the game? if so add it to own_games
 		for i in range(0, len(allgames)):
 			if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
 			
@@ -224,17 +227,17 @@ def your_games(request):
 					},
 				}
 		#Adding all of the games data (i.e title...) that user in developer into dictionary
-		for x in range(0,len(pelit)):
-			data[str(pelit[x].id)]={
+		for x in range(0,len(devgames)):
+			data[str(devgames[x].id)]={
 				'data':
 				{
-				'id':str(pelit[x].id),
-				'title':pelit[x].game_title,
-				'description': pelit[x].description,
-				'bought':str(pelit[x].times_bought),
-				'url':pelit[x].game_url,
-				'picurl':pelit[x].picture_url,
-				'price':str(pelit[x].price),
+				'id':str(devgames[x].id),
+				'title':devgames[x].game_title,
+				'description': devgames[x].description,
+				'bought':str(devgames[x].times_bought),
+				'url':devgames[x].game_url,
+				'picurl':devgames[x].picture_url,
+				'price':str(devgames[x].price),
 				
 				},
 				}
@@ -276,40 +279,36 @@ def game(request, value):
 		return chandler404
 	test = owner == request.user
 	if request.user.is_authenticated and test:
-		
+		'''
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
-			print(bool(games['data']))
-			#Game excists
-			##Checking if user really has the game.
-			print("Value: ",value)
-			peli=get_object_or_404(Game,pk=value) 
+		'''	
+		#Game excists
+		##Checking if user really has the game.
+		##Getting games that user owns.
+		game=get_object_or_404(Game,pk=value, developer_id=str(request.user.pk)) 
 		
-			form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
-			if request.method=='POST':
+		form = EditGame(request.POST or None,initial={'game_title':game.game_title,'description':game.description,'price':game.price,'game_url':game.game_url,'picture_url':game.picture_url})
+		if request.method=='POST':
 				
-				
-				if form.is_valid():
-					
-					for i in ('game_title','description','price','game_url','picture_url'):
-						print(request.POST[i])
-					
-					peli.game_title = request.POST['game_title']
-					peli.description = request.POST['description']
-					peli.price = request.POST['price']
-					peli.game_url = request.POST['game_url']
-					peli.picture_url = request.POST['picture_url']
-					peli.save()
-					return redirect('/webshop/your_games')
-				else: return render(request('webshop/game<int:value>'))
+			## Form is valid and is posted. -Compiling the data to proper format.
+			if form.is_valid():
+				game.game_title = request.POST['game_title']
+				game.description = request.POST['description']
+				game.price = request.POST['price']
+				game.game_url = request.POST['game_url']
+				game.picture_url = request.POST['picture_url']
+				game.save()
+				return redirect('/webshop/your_games')
 				
 			
 			context = {
 				"game": form,
 				"val": value
-				}	
+				}
+						
 			return render(request, "webshop/game.html",context)	
 		else:
 			return render(request, "webshop/notyourgame.html")
@@ -368,20 +367,20 @@ def send_email(request, user_email, subject, message):
 
 # The activation link for the confirmation email
 def activate(request, uidb64, token):
-    # Testing to get the user and uid
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = get_object_or_404(User, pk=uid)
-    except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
-        raise Http404("No user found")
-    # In case the user and link is right, it switch the user activate and logins instantly
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
-    else:
-        return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
+	# Testing to get the user and uid
+	try:
+		uid = force_text(urlsafe_base64_decode(uidb64))
+		user = get_object_or_404(User, pk=uid)
+	except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
+		raise Http404("No user found")
+	# In case the user and link is right, it switch the user activate and logins instantly
+	if user is not None and account_activation_token.check_token(user, token):
+		user.is_active = True
+		user.save()
+		login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+		return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
+	else:
+		return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
 
 #PAYMENT METHODS DOWN HERE
 
@@ -398,50 +397,50 @@ def payment(request, game_id):
 	sid = "tb6AYmthc3Blcg==" #Constant 
 	secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
  
-    # Regular check if it's owned already the game and if it's their own game
-    owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
-    own = Game.objects.filter(developer=buyer).exists()
-    # Checking if the game is not owned yet
-    if not owned:
-        if own:
-            # Renders and error that if it's your game.
-            return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
-        else: 
-            try:
-                # Making sure that the transaction is unique
-                with transaction.atomic():
-                    payment = Transaction(buyer=buyer,  game=game, pid=pid)
-                    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
-                                                                    sid,
-                                                                    amount,
-                                                                    secret)
-                    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
-                    payment.save()
-                    bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
-                    domain ='https://' + str(get_current_site(request))
-                    print(domain)
-                    query = urlencode({
-                    'pid': pid, 'sid': sid, 'amount': amount,
-                    'checksum': checksum,
-                    'success_url':  domain + '/payment/success',
-                    'cancel_url': domain + '/payment/cancel',
-                    'error_url': domain + '/payment/error'})
-            # IntegrityError if it's not unique
-            except IntegrityError:
-                return render(request, 'payment/error.html',{'error':"You already own the game."})
-    else:
-        return render(request, 'payment/error.html', {'error':"You already own the game."})
-    return redirect(bankapi + '?' + query)
+	# Regular check if it's owned already the game and if it's their own game
+	owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
+	own = Game.objects.filter(developer=buyer).exists()
+	# Checking if the game is not owned yet
+	if not owned:
+		if own:
+			# Renders and error that if it's your game.
+			return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
+		else: 
+			try:
+				# Making sure that the transaction is unique
+				with transaction.atomic():
+					payment = Transaction(buyer=buyer,  game=game, pid=pid)
+					checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
+																	sid,
+																	amount,
+																	secret)
+					checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+					payment.save()
+					bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
+					domain ='https://' + str(get_current_site(request))
+					print(domain)
+					query = urlencode({
+					'pid': pid, 'sid': sid, 'amount': amount,
+					'checksum': checksum,
+					'success_url':  domain + '/payment/success',
+					'cancel_url': domain + '/payment/cancel',
+					'error_url': domain + '/payment/error'})
+			# IntegrityError if it's not unique
+			except IntegrityError:
+				return render(request, 'payment/error.html',{'error':"You already own the game."})
+	else:
+		return render(request, 'payment/error.html', {'error':"You already own the game."})
+	return redirect(bankapi + '?' + query)
 
 # Rendering error page and setting the database state
 def error(request):
-    pid = request.GET['pid']
-    data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'Pending':
-        data.state ='Rejected'
-        data.save()
-        return render(request, 'payment/error.html')
-    return render(request, 'payment/error.html')
+	pid = request.GET['pid']
+	data = get_object_or_404(Transaction, pid=pid)
+	if data.state == 'Pending':
+		data.state ='Rejected'
+		data.save()
+		return render(request, 'payment/error.html')
+	return render(request, 'payment/error.html')
 
 # Rendering the cacncel page and setting the database state
 def cancel(request):
@@ -455,20 +454,20 @@ def cancel(request):
 
 
 def success(request):
-    # If the request goes through then it renders the success site
-    if request.GET.get('result') == 'success':
-        pid = request.GET['pid']
-        data = get_object_or_404(Transaction, pid=pid)
-        game = get_object_or_404(Game, pk=data.game.id)
-        if data.state == 'Pending':
-            data.state ='Confirmed'
-            # Adding the time when the is completed.
-            data.buy_completed = timezone.now()
-            data.save()
-            game.times_bought += 1
-            game.save() 
-            return render(request, 'payment/success.html')
-        elif data.state == 'Confirmed':
-            return render(request, 'payment/owned.html')
-    return render(request, 'payment/error.html')
+	# If the request goes through then it renders the success site
+	if request.GET.get('result') == 'success':
+		pid = request.GET['pid']
+		data = get_object_or_404(Transaction, pid=pid)
+		game = get_object_or_404(Game, pk=data.game.id)
+		if data.state == 'Pending':
+			data.state ='Confirmed'
+			# Adding the time when the is completed.
+			data.buy_completed = timezone.now()
+			data.save()
+			game.times_bought += 1
+			game.save() 
+			return render(request, 'payment/success.html')
+		elif data.state == 'Confirmed':
+			return render(request, 'payment/owned.html')
+	return render(request, 'payment/error.html')
 
