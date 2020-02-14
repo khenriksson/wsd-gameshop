@@ -17,6 +17,8 @@ nav {
 html,
 body {
   height: 100%;
+  margin-bottom:50px;
+  margin-top: 50px;
 }
 
 #page-content {
@@ -41,7 +43,10 @@ body {
   background-color: #333;
   position: relative;
   height: 50px;
-  margin-top: -50px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
   clear: both;
 }
 
