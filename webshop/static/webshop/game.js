@@ -39,8 +39,6 @@ function saveStates(gameState) {
             csrfmiddlewaretoken: csrftoken
         },
         success: function (json) {
-            $('#actions').empty();
-            $('#actions').append("Your gamestate was saved!");
             alert("Your gamestate was saved!")
         },
         error: function(jqXHR,exception) {
@@ -68,8 +66,6 @@ function loadStates() {
                 msg.gameState = gameState;
                 var frame = document.getElementById('gameframe');
                 frame.contentWindow.postMessage(msg, "*");
-                $('#actions').empty();
-                $('#actions').append("Loaded your previously saved gamestate");
                 alert("Your gamestate was loaded successfully!")
             }
             else {
@@ -80,8 +76,6 @@ function loadStates() {
                 msg.gameState = gameState;
                 var frame = document.getElementById('gameframe');
                 frame.contentWindow.postMessage(msg, "*");
-                $('#actions').empty();
-                $('#actions').append("No gamestate saved - could not load");
                 alert("No saved gamestate found - could not load")
             }
         },
@@ -107,8 +101,6 @@ function saveScore(score) {
         success: function (json) {
             $('#score').empty();
             $('#score').append(score);
-            $('#actions').empty();
-            $('#actions').append("Your score was saved!");
             alert("Score saved successfully!")
         },
         error: function(jqXHR,exception) {

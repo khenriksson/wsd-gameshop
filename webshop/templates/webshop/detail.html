@@ -19,20 +19,18 @@
     <p>{{game.description}}</p>
     
   </div>
-  <!-- Not done - add 'if' to check if game has been bought-->
+  
   <div id="iframe">
   {% if test == 'yes' %}
-  
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
   </div>
   <div id="iframe">
-  <div>Your current score: <span id="score">0</span></div>
-  <div>Actions: <span id="actions"></span></div>
+  <div>Your last saved score: <span id="score">0</span></div>
+
   <div>Highscores:<ul id="highscores"></ul></div>
 
 
   {% else %}
-
       <img
       class="card-img-top im-fluid"
       src="{{game.picture_url}}"
@@ -41,7 +39,7 @@
     
     <button onclick="location.href='{% url 'payment' game.id %}';" class="btn btn-success pull-right">Buy</button>
   {% endif %}
-  <div>Times bought:<ul>{{game.times_bought}}</ul></div>
+  <div>This game has been bought {{game.times_bought}} times!</div>
   </div>
 </div>
 {% else %}
