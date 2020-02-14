@@ -298,6 +298,38 @@ def game(request, value):
 		else:
 			return render(request, "webshop/notyourgame.html")
 	return render(request, "webshop/notyourgame.html")
+
+	
+##Custom 404 page	
+def chandler404(request,exception,template='webshop/404.html'):
+	response= render(request,template)
+	response.status_code=404
+	return response
+
+# Updating a user's status by adding them to the Group 'Developers'
+def update_dev(request):
+	my_group, created = Group.objects.get_or_create(name='Developers') 
+	my_group.user_set.add(request.user)
+	return redirect('profile')
+
+# Handling the request to edit a user's personal information sent through an EditProfileForm
+def edit_profile(request):
+	if request.user.is_authenticated:
+		user = request.user
+		form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+		if request.method == 'POST':
+			if form.is_valid():
+				user.first_name = request.POST['first_name']
+				user.last_name = request.POST['last_name']
+				user.email = request.POST['email']
+				user.save()
+				return redirect('profile')
+		context = {
+		"form": form
+		}
+		return render(request, 'webshop/edit_profile.html', context)
+	else:
+		return redirect('index')
 	
 ##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
