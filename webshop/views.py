@@ -248,7 +248,7 @@ def your_games(request):
 				
 		return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
 	else:
-		return Http404
+		return render(request, "webshop/index.html")
 	
 def remove_game(request,value):
 	
