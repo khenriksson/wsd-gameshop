@@ -356,13 +356,15 @@ def send_email(request, user_email, subject, message):
         raise Http404("User does not exist")
     
 
-
+# The activation link for the confirmation email
 def activate(request, uidb64, token):
+    # Testing to get the user and uid
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = get_object_or_404(User, pk=uid)
     except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
         raise Http404("No user found")
+    # In case the user and link is right, it switch the user activate and logins instantly
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
@@ -386,14 +388,17 @@ def payment(request, game_id):
     sid = "tb6AYmthc3Blcg==" #Constant 
     secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
  
+    # Regular check if it's owned already the game and if it's their own game
     owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
     own = Game.objects.filter(developer=buyer).exists()
-
+    # Checking if the game is not owned yet
     if not owned:
         if own:
+            # Renders and error that if it's your game.
             return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
         else: 
             try:
+                # Making sure that the transaction is unique
                 with transaction.atomic():
                     payment = Transaction(buyer=buyer,  game=game, pid=pid)
                     checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
@@ -411,15 +416,14 @@ def payment(request, game_id):
                     'success_url':  domain + '/payment/success',
                     'cancel_url': domain + '/payment/cancel',
                     'error_url': domain + '/payment/error'})
-
+            # IntegrityError if it's not unique
             except IntegrityError:
                 return render(request, 'payment/error.html',{'error':"You already own the game."})
     else:
         return render(request, 'payment/error.html', {'error':"You already own the game."})
-
     return redirect(bankapi + '?' + query)
 
-
+# Rendering error page and setting the database state
 def error(request):
     pid = request.GET['pid']
     data = get_object_or_404(Transaction, pid=pid)
@@ -429,7 +433,7 @@ def error(request):
         return render(request, 'payment/error.html')
     return render(request, 'payment/error.html')
 
-    
+# Rendering the cacncel page and setting the database state
 def cancel(request):
     pid = request.GET['pid']
     data = get_object_or_404(Transaction, pid=pid)
@@ -441,13 +445,14 @@ def cancel(request):
 
 
 def success(request):
+    # If the request goes through then it renders the success site
     if request.GET.get('result') == 'success':
         pid = request.GET['pid']
         data = get_object_or_404(Transaction, pid=pid)
         game = get_object_or_404(Game, pk=data.game.id)
         if data.state == 'Pending':
-            print(data.state)
             data.state ='Confirmed'
+            # Adding the time when the is completed.
             data.buy_completed = timezone.now()
             data.save()
             game.times_bought += 1

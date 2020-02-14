@@ -32,14 +32,14 @@ urlpatterns = [
     path('webshop/accounts/', include('allauth.urls')),
     path('webshop/profile/', profile, name='profile'),
 
-    #path('webshop/gameplay/', gameplay, name='gameplay'),   
+
     path('webshop/payment/', payment, name='payment'),
 
     path('webshop/edit_profile/', edit_profile, name='edit_profile'),
     path('webshop/update_dev/', update_dev, name='update_dev'),
     path('webshop/search/<str:search_text>', search_games, name='search'),
 
-    
+    # Activating the user
     path('activate/<uidb64>/<token>/', activate, name='activate' ),
 
     #Payment Urls
