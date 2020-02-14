@@ -274,21 +274,17 @@ def game(request,value):
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
-		'''	#Game excists
-			##Checking if user really has the game.
-			##Getting games that user owns.
+		'''	
+		#Game excists
+		##Checking if user really has the game.
+		##Getting games that user owns.
 		game=get_object_or_404(Game,pk=value, developer_id=str(request.user.pk)) 
 		
 		form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
 		if request.method=='POST':
 				
-				## Form is valid and is posted. -Compiling the data to proper format.
+			## Form is valid and is posted. -Compiling the data to proper format.
 			if form.is_valid():
-					##DEBUG: purposes
-					'''
-					for i in ('game_title','description','price','game_url','picture_url'):
-						print(request.POST[i])
-					'''
 				game.game_title = request.POST['game_title']
 				game.description = request.POST['description']
 				game.price = request.POST['price']
