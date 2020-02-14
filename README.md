@@ -1,6 +1,7 @@
 # EDIT 14.2.2020
 
 Descriptions and points given. 
+
 *Kasper Henriksson*, 647214
 
 *Silvia Geier*, 525132
