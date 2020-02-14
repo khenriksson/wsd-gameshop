@@ -30,202 +30,205 @@ from .tokens import account_activation_token
 
 
 def webshop(request):
-    all_games = Game.objects.all()
-    template = loader.get_template('webshop/index.html')
-    context = {
-        'all_games': all_games,
-    }
-    return HttpResponse(template.render(context, request))
+	all_games = Game.objects.all()
+	template = loader.get_template('webshop/index.html')
+	context = {
+		'all_games': all_games,
+	}
+	return HttpResponse(template.render(context, request))
 
 def search_games(request, search_text):
-    filtered_games = []
-    for game in Game.objects.all():
-        if search_text in game.game_title:
-            filtered_games.append(game)
-    template = loader.get_template('webshop/search.html')
-    context = {
-        'filtered_games': filtered_games,
-    }
-    if not filtered_games:
-        return render(request, 'webshop/wronggame.html', {'search_text': search_text})
-    else:
-        return HttpResponse(template.render(context, request))
-    
+	filtered_games = []
+	for game in Game.objects.all():
+		if search_text in game.game_title:
+			filtered_games.append(game)
+	template = loader.get_template('webshop/search.html')
+	context = {
+		'filtered_games': filtered_games,
+	}
+	if not filtered_games:
+		return render(request, 'webshop/wronggame.html', {'search_text': search_text})
+	else:
+		return HttpResponse(template.render(context, request))
+	
 
 
 def detail(request, game_id):
-    try:
-        game = Game.objects.get(pk=game_id)
-        if request.user.is_authenticated:
-            owned = Transaction.objects.filter(buyer=request.user, game=game, state='Confirmed').exists()
-            own = Game.objects.filter(developer=request.user).exists()
-            test = 'no'
-            if owned or own:
-                test ='yes'
-            return render(request, 'webshop/detail.html', {'game': game, 'test': test })
-    except Game.DoesNotExist:
-        raise Http404("Game does not exist")
-    return render(request, 'webshop/detail.html', {'game': game })
+	try:
+		game = Game.objects.get(pk=game_id)
+		if request.user.is_authenticated:
+			owned = Transaction.objects.filter(buyer=request.user, game=game, state='Confirmed').exists()
+			own = Game.objects.filter(developer=request.user).exists()
+			test = 'no'
+			if owned or own:
+				test ='yes'
+			return render(request, 'webshop/detail.html', {'game': game, 'test': test })
+	except Game.DoesNotExist:
+		raise Http404("Game does not exist")
+	return render(request, 'webshop/detail.html', {'game': game })
 
 def signup(request):
-    if request.user.is_authenticated:
-        return redirect('index')
-    else: 
-        if request.method == 'POST':
-                form = SignUpForm(request.POST)
-                if form.is_valid():
-                    user = form.save(commit=False)
-                    # username = form.cleaned_data.get('username')
-                    #login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                    user.is_active = False
-                    user.save()
-                    is_dev = form.cleaned_data.get('is_dev')
-                    if is_dev == 'Developer':
-                        my_group, created = Group.objects.get_or_create(name='Developers') 
-                        my_group.user_set.add(user)
-                    current_site = get_current_site(request)
-                    # Sending the confirmation email
-                    subject = 'Activate your account.'
-                    message = render_to_string('webshop/activate_email.html', {
-                        'user': user,
-                        'domain': current_site.domain,
-                        'uid':urlsafe_base64_encode(force_bytes(user.id)),
-                        'token':account_activation_token.make_token(user),
-                    })
-                    
-                    send_email(request, user.email, subject, message)
-                    messages.success(request, ('Please Confirm your email to complete registration.'))
-                    return render(request, 'webshop/activation.html', {'text': 'Please confirm your email address to complete the registration'})
-                    #redirect('index') 
-        else:
-            form = SignUpForm()
-        return render(request, 'webshop/signup.html', {'form': form})
-    
+	if request.user.is_authenticated:
+		return redirect('index')
+	else: 
+		if request.method == 'POST':
+				form = SignUpForm(request.POST)
+				if form.is_valid():
+					user = form.save(commit=False)
+					# username = form.cleaned_data.get('username')
+					#login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+					user.is_active = False
+					user.save()
+					is_dev = form.cleaned_data.get('is_dev')
+					if is_dev == 'Developer':
+						my_group, created = Group.objects.get_or_create(name='Developers') 
+						my_group.user_set.add(user)
+					current_site = get_current_site(request)
+					# Sending the confirmation email
+					subject = 'Activate your account.'
+					message = render_to_string('webshop/activate_email.html', {
+						'user': user,
+						'domain': current_site.domain,
+						'uid':urlsafe_base64_encode(force_bytes(user.id)),
+						'token':account_activation_token.make_token(user),
+					})
+					
+					send_email(request, user.email, subject, message)
+					messages.success(request, ('Please Confirm your email to complete registration.'))
+					return render(request, 'webshop/activation.html', {'text': 'Please confirm your email address to complete the registration'})
+					#redirect('index') 
+		else:
+			form = SignUpForm()
+		return render(request, 'webshop/signup.html', {'form': form})
+	
 
 def addgame(request):
-    
-    if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
-        game = Game()
-        user = request.user
-        if request.method == 'POST':
-            form = AddGameForm(request.POST)
-            if form.is_valid():
-                game = form.save(commit = False)
-                game.developer = user
-                game.save()
-                return redirect('index')   
-        else:
-            form = AddGameForm()
-        return render(request, 'webshop/addgame.html', {'form': form})
-    else: return redirect('index')
+	
+	if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
+		game = Game()
+		user = request.user
+		if request.method == 'POST':
+			form = AddGameForm(request.POST)
+			if form.is_valid():
+				game = form.save(commit = False)
+				game.developer = user
+				game.save()
+				return redirect('index')   
+		else:
+			form = AddGameForm()
+		return render(request, 'webshop/addgame.html', {'form': form})
+	else: return redirect('index')
 
 def savegame(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        user = request.user
-        gameInfo = request.POST['gameState']
-        try:
-            gameData = GameData.objects.get(game = game,
-            user = user)
-            gameData.gameInfo = gameInfo
-            gameData.save()
-        except:
-            gameData = GameData(game = game, user = user,
-            gameInfo = gameInfo)
-            gameData.save()
-    return HttpResponse("data saved")
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		user = request.user
+		gameInfo = request.POST['gameState']
+		try:
+			gameData = GameData.objects.get(game = game,
+			user = user)
+			gameData.gameInfo = gameInfo
+			gameData.save()
+		except:
+			gameData = GameData(game = game, user = user,
+			gameInfo = gameInfo)
+			gameData.save()
+	return HttpResponse("data saved")
 
 def loadgame(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        user = request.user
-        try:
-            gameData = GameData.objects.get(game = game, user = user)
-            gameState = gameData.gameInfo
-        except:
-            gameState = ''
-    return HttpResponse(gameState)
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		user = request.user
+		try:
+			gameData = GameData.objects.get(game = game, user = user)
+			gameState = gameData.gameInfo
+		except:
+			gameState = ''
+	return HttpResponse(gameState)
 
 def savescore(request):
-    if request.method == 'POST':
-        game = request.POST['gameID']
-        score = request.POST['score']
-        user = request.user
-        try:
-            gameData = GameData.objects.get(game = game,
-            user = user)
-            if (int(score) > gameData.score):
-                gameData.score = score
-                gameData.save()
-        except:
-            gameData = GameData(game = game, user = user, score = score)
-            gameData.save()
-    return HttpResponse("score saved")
+	if request.method == 'POST':
+		game = request.POST['gameID']
+		score = request.POST['score']
+		user = request.user
+		try:
+			gameData = GameData.objects.get(game = game,
+			user = user)
+			if (int(score) > gameData.score):
+				gameData.score = score
+				gameData.save()
+		except:
+			gameData = GameData(game = game, user = user, score = score)
+			gameData.save()
+	return HttpResponse("score saved")
 
 def highscore(request):
-    if request.method == 'GET':
-        game = request.GET['gameID']
-        filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
-        top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
-    return HttpResponse(json.dumps(top10), content_type="application/json")
+	if request.method == 'GET':
+		game = request.GET['gameID']
+		filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
+		top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
+	return HttpResponse(json.dumps(top10), content_type="application/json")
 
 
 def get_user(user):
-    try:
-        user = UserProfile.objects.get(user=user)
-    except UserProfile.DoesNotExist:
-        user = None
-    
+	try:
+		user = UserProfile.objects.get(user=user)
+	except UserProfile.DoesNotExist:
+		user = None
+	
 
 def profile(request):
-    return render(request, 'webshop/profile.html')
+	return render(request, 'webshop/profile.html')
+	
+def notyourgame(request):
+	return render(request, 'webshop/notyourgame.html')
 
 
 def your_games(request):
-    if request.user.is_authenticated:
-        data={}
-        own_games={}	
-            
-        pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
-        allgames = Game.objects.all()
-        # own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
-        for i in range(0, len(allgames)):
-            if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
-            
-                own_games[str(allgames[i].id)]={
-                    'own_games':
-                    {
-                    'id':str(allgames[i].id),
-                    'title':allgames[i].game_title,
-                    'description': allgames[i].description,
-                    'bought':str(allgames[i].times_bought),
-                    'url':allgames[i].game_url,
-                    'picurl':allgames[i].picture_url,
-                    'price':str(allgames[i].price),
-                    },
-                }
-        #Adding all of the games data (i.e title...) that user in developer into dictionary
-        for x in range(0,len(pelit)):
-            data[str(pelit[x].id)]={
-                'data':
-                {
-                'id':str(pelit[x].id),
-                'title':pelit[x].game_title,
-                'description': pelit[x].description,
-                'bought':str(pelit[x].times_bought),
-                'url':pelit[x].game_url,
-                'picurl':pelit[x].picture_url,
-                'price':str(pelit[x].price),
-                
-                },
-                }
+	if request.user.is_authenticated:
+		data={}
+		own_games={}	
+			
+		pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+		allgames = Game.objects.all()
+		# own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
+		for i in range(0, len(allgames)):
+			if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
+			
+				own_games[str(allgames[i].id)]={
+					'own_games':
+					{
+					'id':str(allgames[i].id),
+					'title':allgames[i].game_title,
+					'description': allgames[i].description,
+					'bought':str(allgames[i].times_bought),
+					'url':allgames[i].game_url,
+					'picurl':allgames[i].picture_url,
+					'price':str(allgames[i].price),
+					},
+				}
+		#Adding all of the games data (i.e title...) that user in developer into dictionary
+		for x in range(0,len(pelit)):
+			data[str(pelit[x].id)]={
+				'data':
+				{
+				'id':str(pelit[x].id),
+				'title':pelit[x].game_title,
+				'description': pelit[x].description,
+				'bought':str(pelit[x].times_bought),
+				'url':pelit[x].game_url,
+				'picurl':pelit[x].picture_url,
+				'price':str(pelit[x].price),
+				
+				},
+				}
 
-        
-                
+		
+				
 
-        return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
-    else:
-        return Http404
+		return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
+	else:
+		return Http404
 	
 def remove_game(request,value):
 	
@@ -247,10 +250,16 @@ def remove_game(request,value):
 	'''	
 
 	
-def game(request,value):
+def game(request, value):
 	
 	## Note to self: Using Pk as a game value sounds like a bad idea.
-	if request.user.is_authenticated:
+
+	try:
+		owner = Game.objects.get(pk=value).developer
+	except(Game.DoesNotExist):
+		raise Http404("No user found")
+	test = owner == request.user
+	if request.user.is_authenticated and test:
 		
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
@@ -278,6 +287,7 @@ def game(request,value):
 					peli.picture_url = request.POST['picture_url']
 					peli.save()
 					return redirect('/webshop/your_games')
+				else: return render(request('webshop/game<int:value>'))
 				
 			
 			context = {
@@ -286,8 +296,8 @@ def game(request,value):
 				}	
 			return render(request, "webshop/game.html",context)	
 		else:
-			return Http404
-	return Http404
+			return render(request, "webshop/notyourgame.html")
+	return render(request, "webshop/notyourgame.html")
 	
 ##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
@@ -296,156 +306,156 @@ def chandler404(request,exception,template='webshop/404.html'):
 	return response
 
 def update_dev(request):
-    my_group, created = Group.objects.get_or_create(name='Developers') 
-    my_group.user_set.add(request.user)
-    return redirect('profile')
+	my_group, created = Group.objects.get_or_create(name='Developers') 
+	my_group.user_set.add(request.user)
+	return redirect('profile')
 
 
 	
 	
 def edit_profile(request):
-    if request.user.is_authenticated:
-        user = request.user
-        form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
-        if request.method == 'POST':
-            if form.is_valid():
-                user.first_name = request.POST['first_name']
-                user.last_name = request.POST['last_name']
-                user.email = request.POST['email']
-                user.save()
-                return redirect('profile')
-        context = {
-        "form": form
-        }
-        return render(request, 'webshop/edit_profile.html', context)
-    else:
-        return redirect('index')
+	if request.user.is_authenticated:
+		user = request.user
+		form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+		if request.method == 'POST':
+			if form.is_valid():
+				user.first_name = request.POST['first_name']
+				user.last_name = request.POST['last_name']
+				user.email = request.POST['email']
+				user.save()
+				return redirect('profile')
+		context = {
+		"form": form
+		}
+		return render(request, 'webshop/edit_profile.html', context)
+	else:
+		return redirect('index')
 
 
 # A secure way of sending the registered emails
 def send_email(request, user_email, subject, message):
-    try:
-        # No way to do header injections
-        subject = request.POST.get('subject', subject)
-        message = request.POST.get('message', message)
-        from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
-        if subject and message and from_email:
-            try:
-                send_mail(subject, message, from_email, [user_email])
-            except BadHeaderError:
-                return HttpResponse('Invalid header found.')
-            return redirect('index')
-        else:
-            return HttpResponse('Make sure all fields are entered and valid.')
-    except UserProfile.DoesNotExist:
-        raise Http404("User does not exist")
-    
+	try:
+		# No way to do header injections
+		subject = request.POST.get('subject', subject)
+		message = request.POST.get('message', message)
+		from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
+		if subject and message and from_email:
+			try:
+				send_mail(subject, message, from_email, [user_email])
+			except BadHeaderError:
+				return HttpResponse('Invalid header found.')
+			return redirect('index')
+		else:
+			return HttpResponse('Make sure all fields are entered and valid.')
+	except UserProfile.DoesNotExist:
+		raise Http404("User does not exist")
+	
 
 
 def activate(request, uidb64, token):
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = get_object_or_404(User, pk=uid)
-    except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
-        raise Http404("No user found")
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
-    else:
-        return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
+	try:
+		uid = force_text(urlsafe_base64_decode(uidb64))
+		user = get_object_or_404(User, pk=uid)
+	except(TypeError, ValueError, OverflowError, UserProfile.DoesNotExist):
+		raise Http404("No user found")
+	if user is not None and account_activation_token.check_token(user, token):
+		user.is_active = True
+		user.save()
+		login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+		return render(request, 'webshop/activation.html', {'text': 'Thank you for your email confirmation. Now you can login your account.'}) 
+	else:
+		return render(request, 'webshop/activation.html', {'text': 'Link is inactive!'})
 
 #PAYMENT METHODS DOWN HERE
 
 @login_required
 @transaction.atomic()
 def payment(request, game_id):
-    # This code executes inside a transaction.
-    user = request.user.id
-    buyer = get_object_or_404(User, pk=user)
-    game = get_object_or_404(Game, pk=game_id)
-    amount = game.price
+	# This code executes inside a transaction.
+	user = request.user.id
+	buyer = get_object_or_404(User, pk=user)
+	game = get_object_or_404(Game, pk=game_id)
+	amount = game.price
 
-    pid = str(uuid4()) # Generate this everytime
-    sid = "tb6AYmthc3Blcg==" #Constant 
-    secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
+	pid = str(uuid4()) # Generate this everytime
+	sid = "tb6AYmthc3Blcg==" #Constant 
+	secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
  
-    owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
-    own = Game.objects.filter(developer=buyer).exists()
+	owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
+	own = Game.objects.filter(developer=buyer).exists()
 
-    if not owned:
-        if own:
-            return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
-        else: 
-            try:
-                with transaction.atomic():
-                    payment = Transaction(buyer=buyer,  game=game, pid=pid)
-                    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
-                                                                    sid,
-                                                                    amount,
-                                                                    secret)
-                    checksum = md5(checksumstr.encode('utf-8')).hexdigest()
-                    payment.save()
-                    bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
-                    domain = 'http://' + str(get_current_site(request))
-                    print(domain)
-                    query = urlencode({
-                    'pid': pid, 'sid': sid, 'amount': amount,
-                    'checksum': checksum,
-                    'success_url':  domain + '/payment/success',
-                    'cancel_url':  domain + '/payment/cancel',
-                    'error_url':  domain + '/payment/error'})
+	if not owned:
+		if own:
+			return render(request, 'payment/error.html', {'error':"You cannot buy your own game."})
+		else: 
+			try:
+				with transaction.atomic():
+					payment = Transaction(buyer=buyer,  game=game, pid=pid)
+					checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid,
+																	sid,
+																	amount,
+																	secret)
+					checksum = md5(checksumstr.encode('utf-8')).hexdigest()
+					payment.save()
+					bankapi = 'https://tilkkutakki.cs.aalto.fi/payments/pay'
+					domain = 'http://' + str(get_current_site(request))
+					print(domain)
+					query = urlencode({
+					'pid': pid, 'sid': sid, 'amount': amount,
+					'checksum': checksum,
+					'success_url':  domain + '/payment/success',
+					'cancel_url':  domain + '/payment/cancel',
+					'error_url':  domain + '/payment/error'})
 
-            except IntegrityError:
-                return render(request, 'payment/error.html',{'error':"You already own the game."})
-    else:
-        return render(request, 'payment/error.html', {'error':"You already own the game."})
+			except IntegrityError:
+				return render(request, 'payment/error.html',{'error':"You already own the game."})
+	else:
+		return render(request, 'payment/error.html', {'error':"You already own the game."})
 
-    #checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
-    
+	#checksumstr = f"pid={pid:s}&sid={sid:s}&amount={amount:.2f}&token={secret:s}"
+	
 
-    
+	
 
-    return redirect(bankapi + '?' + query)
+	return redirect(bankapi + '?' + query)
 
 
 def error(request):
-    pid = request.GET['pid']
-    data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'Pending':
-        data.state ='Rejected'
-        data.save()
-        return render(request, 'payment/error.html')
-    return render(request, 'payment/error.html')
+	pid = request.GET['pid']
+	data = get_object_or_404(Transaction, pid=pid)
+	if data.state == 'Pending':
+		data.state ='Rejected'
+		data.save()
+		return render(request, 'payment/error.html')
+	return render(request, 'payment/error.html')
 
-    
+	
 def cancel(request):
-    pid = request.GET['pid']
-    data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'Pending':
-        data.state ='Rejected'
-        data.save()
-        return render(request, 'payment/cancel.html')
-    return render(request, 'payment/cancel.html')
+	pid = request.GET['pid']
+	data = get_object_or_404(Transaction, pid=pid)
+	if data.state == 'Pending':
+		data.state ='Rejected'
+		data.save()
+		return render(request, 'payment/cancel.html')
+	return render(request, 'payment/cancel.html')
 
 
 def success(request):
-    if request.GET.get('result') == 'success':
-        pid = request.GET['pid']
-        data = get_object_or_404(Transaction, pid=pid)
-        game = get_object_or_404(Game, pk=data.game.id)
-        if data.state == 'Pending':
-            print(data.state)
-            data.state ='Confirmed'
-            data.buy_completed = timezone.now()
-            data.save()
-            game.times_bought += 1
-            game.save() 
-            return render(request, 'payment/success.html')
-        elif data.state == 'Confirmed':
-            return render(request, 'payment/owned.html')
-    return render(request, 'payment/error.html')
+	if request.GET.get('result') == 'success':
+		pid = request.GET['pid']
+		data = get_object_or_404(Transaction, pid=pid)
+		game = get_object_or_404(Game, pk=data.game.id)
+		if data.state == 'Pending':
+			print(data.state)
+			data.state ='Confirmed'
+			data.buy_completed = timezone.now()
+			data.save()
+			game.times_bought += 1
+			game.save() 
+			return render(request, 'payment/success.html')
+		elif data.state == 'Confirmed':
+			return render(request, 'payment/owned.html')
+	return render(request, 'payment/error.html')
 
 
 

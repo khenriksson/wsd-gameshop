@@ -48,6 +48,7 @@ urlpatterns = [
     path('webshop/your_games', your_games, name='your_games'),
     path('webshop/game<int:value>', game, name='game'),
     path('webshop/removegame/<int:value>',remove_game,name="remove_game"),
+    path('webshop/notyourgame/',notyourgame,name="notyourgame"),
     
     
     path("webshop/savegame/", views.savegame, name='savegame'),
