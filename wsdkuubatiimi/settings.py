@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 ]
 ## use first instance: 3rd party login.
-SITE_ID=2
+SITE_ID=1
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
@@ -161,7 +161,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/webshop/'
+LOGIN_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
 
