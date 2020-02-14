@@ -108,9 +108,11 @@ def signup(request):
     
 
 def addgame(request):
+    ## Checking if player is logged in and has developers status
     if request.user.is_authenticated and request.user.groups.filter(name__in=['Developers']).exists():
         game = Game()
         user = request.user
+        ## checking if form is posted and is valid.
         if request.method == 'POST':
             form = AddGameForm(request.POST)
             if form.is_valid():
@@ -119,6 +121,7 @@ def addgame(request):
                 game.save()
                 return redirect('index')   
         else:
+            ##Sending form to be filled.
             form = AddGameForm()
         return render(request, 'webshop/addgame.html', {'form': form})
     else: return redirect('index')
@@ -199,10 +202,10 @@ def your_games(request):
     if request.user.is_authenticated:
         data={}
         own_games={}	
-            
-        pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+        #Getting all developers games and all games    
+        devgames=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
         allgames = Game.objects.all()
-        # own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
+        # Does user own the game? if so add it to own_games
         for i in range(0, len(allgames)):
             if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
             
@@ -219,17 +222,17 @@ def your_games(request):
                     },
                 }
         #Adding all of the games data (i.e title...) that user in developer into dictionary
-        for x in range(0,len(pelit)):
-            data[str(pelit[x].id)]={
+        for x in range(0,len(devgames)):
+            data[str(devgames[x].id)]={
                 'data':
                 {
-                'id':str(pelit[x].id),
-                'title':pelit[x].game_title,
-                'description': pelit[x].description,
-                'bought':str(pelit[x].times_bought),
-                'url':pelit[x].game_url,
-                'picurl':pelit[x].picture_url,
-                'price':str(pelit[x].price),
+                'id':str(devgames[x].id),
+                'title':devgames[x].game_title,
+                'description': devgames[x].description,
+                'bought':str(devgames[x].times_bought),
+                'url':devgames[x].game_url,
+                'picurl':devgames[x].picture_url,
+                'price':str(devgames[x].price),
                 
                 },
                 }
@@ -262,42 +265,40 @@ def remove_game(request,value):
 
 	
 def game(request,value):
-	
+	##Modify the game
 	## Note to self: Using Pk as a game value sounds like a bad idea.
 	if request.user.is_authenticated:
-		
+		# Checking: Does user own this game
+		'''
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
-			print(bool(games['data']))
-			#Game excists
-			##Checking if user really has the game.
-			print("Value: ",value)
-			peli=get_object_or_404(Game,pk=value) 
+		'''	
+		#Game excists
+		##Checking if user really has the game.
+		##Getting games that user owns.
+		game=get_object_or_404(Game,pk=value, developer_id=str(request.user.pk)) 
 		
-			form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
-			if request.method=='POST':
+		form = EditGame(request.POST or None,initial={'game_title':peli.game_title,'description':peli.description,'price':peli.price,'game_url':peli.game_url,'picture_url':peli.picture_url})
+		if request.method=='POST':
 				
-				
-				if form.is_valid():
-					
-					for i in ('game_title','description','price','game_url','picture_url'):
-						print(request.POST[i])
-					
-					peli.game_title = request.POST['game_title']
-					peli.description = request.POST['description']
-					peli.price = request.POST['price']
-					peli.game_url = request.POST['game_url']
-					peli.picture_url = request.POST['picture_url']
-					peli.save()
-					return redirect('/webshop/your_games')
+			## Form is valid and is posted. -Compiling the data to proper format.
+			if form.is_valid():
+				game.game_title = request.POST['game_title']
+				game.description = request.POST['description']
+				game.price = request.POST['price']
+				game.game_url = request.POST['game_url']
+				game.picture_url = request.POST['picture_url']
+				game.save()
+				return redirect('/webshop/your_games')
 				
 			
 			context = {
 				"game": form,
 				"val": value
-				}	
+				}
+						
 			return render(request, "webshop/game.html",context)	
 		else:
 			return Http404
