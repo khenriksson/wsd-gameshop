@@ -281,7 +281,7 @@ def game(request, value):
 	if request.user.is_authenticated and test:
 		
 		with connection.cursor() as cs:	
-			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
+			cs.execute("SELECT * FROM webshop_game WHERE developer_id="+str(request.user.pk))
 			games={'data': cs.fetchall()}
 		if bool(games['data']):
 			print(bool(games['data']))
