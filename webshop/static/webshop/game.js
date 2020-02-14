@@ -2,6 +2,14 @@ function domain() {
     return document.location.origin;
 }
 
+function error(error_info) {
+    var message={};
+    message.messageType ="ERROR";
+    message.info = error_info;
+    var frame = document.getElementById('gameframe');
+    frame.contentWindow.postMessage(msg, "*");
+}
+
 // From https://docs.djangoproject.com/en/3.0/ref/csrf/
 function getCookie(name) {
     var cookieValue = null;
@@ -33,6 +41,9 @@ function saveStates(gameState) {
         success: function (json) {
             $('#actions').empty();
             $('#actions').append("Your gamestate was saved!");
+        },
+        error: function(jqXHR,exception) {
+            error(jqXHR.responseText);
         }
     });
 }
@@ -60,10 +71,19 @@ function loadStates() {
                 $('#actions').append("Loaded your previously saved gamestate");
             }
             else {
-                // If no saved gamestate is found, notifying the user
+                // If no saved gamestate is found
+                var gameState = JSON.parse(json);
+                var msg = {};
+                msg.messageType = "ERROR";
+                msg.gameState = gameState;
+                var frame = document.getElementById('gameframe');
+                frame.contentWindow.postMessage(msg, "*");
                 $('#actions').empty();
                 $('#actions').append("No gamestate saved - could not load");
             }
+        },
+        error: function(jqXHR,exception) {
+            error(jqXHR.responseText);
         }
     });
 }
@@ -86,6 +106,9 @@ function saveScore(score) {
             $('#score').append(score);
             $('#actions').empty();
             $('#actions').append("Your score was saved!");
+        },
+        error: function(jqXHR,exception) {
+            error(jqXHR.responseText);
         }
     });
 }
@@ -111,6 +134,9 @@ function showHighscores() {
                     $('#highscores').append(listItem);
                 });
             }
+        },
+        error: function(jqXHR,exception) {
+            error(jqXHR.responseText);
         }
     });
 }
