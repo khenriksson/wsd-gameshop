@@ -60,8 +60,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
-## use first instance: 3rd party login.
-SITE_ID=1
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',

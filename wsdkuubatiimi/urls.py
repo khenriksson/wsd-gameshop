@@ -28,8 +28,12 @@ urlpatterns = [
     path("webshop/<int:game_id>/", detail, name='detail'),
     path("webshop/signup/", signup, name='signup'),
     path("webshop/addgame/", addgame, name='addgame'),
+    
+    #Authentication 
     path('webshop/accounts/', include('django.contrib.auth.urls')),
     path('webshop/accounts/', include('allauth.urls')),
+    
+    
     path('webshop/profile/', profile, name='profile'),
 
 

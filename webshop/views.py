@@ -210,6 +210,7 @@ def your_games(request):
 		#Getting all developers games and all games    
 		devgames=Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
 		allgames = Game.objects.all()
+		print(devgames)
 		# Does user own the game? if so add it to own_games
 		for i in range(0, len(allgames)):
 			if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
@@ -227,26 +228,26 @@ def your_games(request):
 					},
 				}
 		#Adding all of the games data (i.e title...) that user in developer into dictionary
-				for x in range(0,len(devgames)):
-					earned = devgames[x].times_bought * devgames[x].price
-					data[str(devgames[x].id)]={
-						'data':
-						{
-						'id':str(devgames[x].id),
-						'title':devgames[x].game_title,
-						'description': devgames[x].description,
-						'bought':str(devgames[x].times_bought),
-						'url':devgames[x].game_url,
-						'picurl':devgames[x].picture_url,
-						'price':str(devgames[x].price),
-						'earned': str(earned),
-						},
-						}
+		for x in range(0,len(devgames)):
+			earned = devgames[x].times_bought * devgames[x].price
+			data[str(devgames[x].id)]={
+				'data':
+				{
+					'id':str(devgames[x].id),
+					'title':devgames[x].game_title,
+					'description': devgames[x].description,
+					'bought':str(devgames[x].times_bought),
+					'url':devgames[x].game_url,
+					'picurl':devgames[x].picture_url,
+					'price':str(devgames[x].price),
+					'earned': str(earned),
+				},
+				}
 
 
 		
 				
-
+		print(data)
 		return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
 	else:
 		return Http404
