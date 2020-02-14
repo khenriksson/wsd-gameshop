@@ -41,7 +41,7 @@ def webshop(request):
 def search_games(request, search_text):
 	filtered_games = []
 	for game in Game.objects.all():
-		if search_text in game.game_title:
+		if search_text.casefold() in game.game_title.casefold():
 			filtered_games.append(game)
 	template = loader.get_template('webshop/search.html')
 	context = {
