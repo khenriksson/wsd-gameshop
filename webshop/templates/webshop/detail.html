@@ -13,24 +13,22 @@
   <script type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
   {% if user.is_authenticated %}
 
-  <div id="game_topbox">
+  <div class="game_textbox">
     <h2>You are playing <strong>{{game.game_title}}</strong></h2>
     <h4>Game developed by {{game.developer}}</h4>
     <p>{{game.description}}</p>
-
   </div>
 
   <div id="iframe">
     {% if test == 'yes' %}
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
   </div>
-  <div>
+
+  <div class="game_textbox">
     <div>Your last saved score: <span id="score">0</span></div>
-
-    <div>Highscores:<ul id="highscores"></ul>
-    </div>
-
-
+    <div>Highscores:<ul id="highscores"></ul></div>
+  </div>
+  <div class="game_textbox">
     {% else %}
     <img class="card-img-top im-fluid" src="{{game.picture_url}}" alt="Card image cap" />
 
@@ -40,7 +38,7 @@
   </div>
 </div>
 {% else %}
-<div id="game_topbox">
+<div id="game_textbox">
   <h4>Log in to buy and play<br>{{game.game_title}}</h4>
   <a href="/webshop/accounts/login/" class="btn btn-outline-dark">Log in</a>
   <p>Don't have an account yet?</p>

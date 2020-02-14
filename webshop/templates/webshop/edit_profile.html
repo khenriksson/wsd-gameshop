@@ -1,15 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-{% if user.is_authenticated %}
-<h1>Edit Profile</h1>
-<p>Username: {{ user.get_username }}</p>
-<form method="POST" action="/webshop/edit_profile/" class="" >
-    {% csrf_token %}
-    {{ form.as_table }}
+
+<div class="container">
+    {% if user.is_authenticated %}
+    <h1>Edit Profile</h1>
+    <p>Username: {{ user.get_username }}</p>
+    <form method="POST" action="/webshop/edit_profile/" class="">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </p>
+        {% endfor %}
+    </form>
     <button type="submit">Save</button>
-</form>
-{% else %}
-<li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-{% endif %} 
+    {% else %}
+    <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+</div>
+{% endif %}
 
 {% endblock %}
