@@ -194,7 +194,7 @@ def your_games(request):
 		# own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
 		for i in range(0, len(allgames)):
 			if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
-			
+				earned = allgames[i].times_bought * allgames[i].price
 				own_games[str(allgames[i].id)]={
 					'own_games':
 					{
@@ -205,10 +205,12 @@ def your_games(request):
 					'url':allgames[i].game_url,
 					'picurl':allgames[i].picture_url,
 					'price':str(allgames[i].price),
+					
 					},
 				}
 		#Adding all of the games data (i.e title...) that user in developer into dictionary
 		for x in range(0,len(pelit)):
+			earned = pelit[x].times_bought * pelit[x].price
 			data[str(pelit[x].id)]={
 				'data':
 				{
@@ -219,7 +221,7 @@ def your_games(request):
 				'url':pelit[x].game_url,
 				'picurl':pelit[x].picture_url,
 				'price':str(pelit[x].price),
-				
+				'earned': str(earned),
 				},
 				}
 
