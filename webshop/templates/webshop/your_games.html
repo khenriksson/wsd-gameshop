@@ -32,6 +32,7 @@
       <th scope="col">Price:</th>
       <th scope="col">Bought:</th>
       <th scope="col">Modify the game:</th>
+      <th scope="col">Earned:</th>
     </tr>
   </thead>
   <tbody>
@@ -43,6 +44,7 @@
       <td>
         <a href="/webshop/game{{val.id}}">Modify {{val.title}}</a>
       </td>
+      <td>{{val.earned}}</td>
     </tr>
 
     {%endfor%} {%endfor%} {%endif%}
