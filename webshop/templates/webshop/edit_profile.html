@@ -19,8 +19,9 @@
             {% endfor %}
         </p>
         {% endfor %}
+        <button type="submit">Save</button>
     </form>
-    <button type="submit">Save</button>
+    
     {% else %}
     <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
 </div>
