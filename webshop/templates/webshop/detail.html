@@ -10,36 +10,33 @@
     user = "{{request.user}";
     top10 = "{{top10}}";
   </script>
-  <script  type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
+  <script type="text/javascript" src="{% static 'webshop/game.js' %}"></script>
   {% if user.is_authenticated %}
-  
+
   <div id="game_topbox">
     <h2>You are playing <strong>{{game.game_title}}</strong></h2>
     <h4>Game developed by {{game.developer}}</h4>
     <p>{{game.description}}</p>
-    
+
   </div>
-  
+
   <div id="iframe">
-  {% if test == 'yes' %}
+    {% if test == 'yes' %}
     <iframe id="gameframe" src={{game.game_url}} allowfullscreen></iframe>
   </div>
-  <div id="iframe">
-  <div>Your last saved score: <span id="score">0</span></div>
+  <div>
+    <div>Your last saved score: <span id="score">0</span></div>
 
-  <div>Highscores:<ul id="highscores"></ul></div>
+    <div>Highscores:<ul id="highscores"></ul>
+    </div>
 
 
-  {% else %}
-      <img
-      class="card-img-top im-fluid"
-      src="{{game.picture_url}}"
-      alt="Card image cap"
-    />
-    
+    {% else %}
+    <img class="card-img-top im-fluid" src="{{game.picture_url}}" alt="Card image cap" />
+
     <button onclick="location.href='{% url 'payment' game.id %}';" class="btn btn-success pull-right">Buy</button>
-  {% endif %}
-  <div>This game has been bought {{game.times_bought}} times!</div>
+    {% endif %}
+    <div>This game has been bought {{game.times_bought}} times!</div>
   </div>
 </div>
 {% else %}
