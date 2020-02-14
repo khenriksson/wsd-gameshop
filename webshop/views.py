@@ -30,43 +30,43 @@ from .tokens import account_activation_token
 
 # Rendering front page
 def webshop(request):
-    all_games = Game.objects.all()
-    template = loader.get_template('webshop/index.html')
-    context = {
-        'all_games': all_games,
-    }
-    return HttpResponse(template.render(context, request))
+	all_games = Game.objects.all()
+	template = loader.get_template('webshop/index.html')
+	context = {
+		'all_games': all_games,
+	}
+	return HttpResponse(template.render(context, request))
 
 # Rendering games filtered based on a search from the navbar
 def search_games(request, search_text):
-    filtered_games = []
-    for game in Game.objects.all():
-        if search_text in game.game_title:
-            filtered_games.append(game)
-    template = loader.get_template('webshop/search.html')
-    context = {
-        'filtered_games': filtered_games,
-    }
-    if not filtered_games:
-        return render(request, 'webshop/wronggame.html', {'search_text': search_text})
-    else:
-        return HttpResponse(template.render(context, request))
-    
+	filtered_games = []
+	for game in Game.objects.all():
+		if search_text in game.game_title:
+			filtered_games.append(game)
+	template = loader.get_template('webshop/search.html')
+	context = {
+		'filtered_games': filtered_games,
+	}
+	if not filtered_games:
+		return render(request, 'webshop/wronggame.html', {'search_text': search_text})
+	else:
+		return HttpResponse(template.render(context, request))
+	
 
 #
 def detail(request, game_id):
-    try:
-        game = Game.objects.get(pk=game_id)
-        if request.user.is_authenticated:
-            owned = Transaction.objects.filter(buyer=request.user, game=game, state='Confirmed').exists()
-            own = Game.objects.filter(developer=request.user).exists()
-            test = 'no'
-            if owned or own:
-                test ='yes'
-            return render(request, 'webshop/detail.html', {'game': game, 'test': test })
-    except Game.DoesNotExist:
-        raise Http404("Game does not exist")
-    return render(request, 'webshop/detail.html', {'game': game })
+	try:
+		game = Game.objects.get(pk=game_id)
+		if request.user.is_authenticated:
+			owned = Transaction.objects.filter(buyer=request.user, game=game, state='Confirmed').exists()
+			own = Game.objects.filter(developer=request.user).exists()
+			test = 'no'
+			if owned or own:
+				test ='yes'
+			return render(request, 'webshop/detail.html', {'game': game, 'test': test })
+	except Game.DoesNotExist:
+		raise Http404("Game does not exist")
+	return render(request, 'webshop/detail.html', {'game': game })
 
 def signup(request):
     # Quick check for making sure that the user is authenticated when 
@@ -179,11 +179,11 @@ def savescore(request):
 
 # Retreiving the top 10 scores from GameData objects
 def highscore(request):
-    if request.method == 'GET':
-        game = request.GET['gameID']
-        filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
-        top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
-    return HttpResponse(json.dumps(top10), content_type="application/json")
+	if request.method == 'GET':
+		game = request.GET['gameID']
+		filtered = GameData.objects.filter(game=game).order_by('-score')[:10]
+		top10 = serializers.serialize("json", filtered, fields = ('user', 'score'))
+	return HttpResponse(json.dumps(top10), content_type="application/json")
 
 
 def get_user(user):
@@ -194,54 +194,57 @@ def get_user(user):
     
 # Rendering the profile
 def profile(request):
-    return render(request, 'webshop/profile.html')
+	return render(request, 'webshop/profile.html')
+	
+def notyourgame(request):
+	return render(request, 'webshop/notyourgame.html')
 
 
 def your_games(request):
-    if request.user.is_authenticated:
-        data={}
-        own_games={}	
-            
-        pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
-        allgames = Game.objects.all()
-        # own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
-        for i in range(0, len(allgames)):
-            if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
-            
-                own_games[str(allgames[i].id)]={
-                    'own_games':
-                    {
-                    'id':str(allgames[i].id),
-                    'title':allgames[i].game_title,
-                    'description': allgames[i].description,
-                    'bought':str(allgames[i].times_bought),
-                    'url':allgames[i].game_url,
-                    'picurl':allgames[i].picture_url,
-                    'price':str(allgames[i].price),
-                    },
-                }
-        #Adding all of the games data (i.e title...) that user in developer into dictionary
-        for x in range(0,len(pelit)):
-            data[str(pelit[x].id)]={
-                'data':
-                {
-                'id':str(pelit[x].id),
-                'title':pelit[x].game_title,
-                'description': pelit[x].description,
-                'bought':str(pelit[x].times_bought),
-                'url':pelit[x].game_url,
-                'picurl':pelit[x].picture_url,
-                'price':str(pelit[x].price),
-                
-                },
-                }
+	if request.user.is_authenticated:
+		data={}
+		own_games={}	
+			
+		pelit =Game.objects.filter(developer_id=request.user.pk)#get_object_or_404(Game,developer_id=request.user.pk) 
+		allgames = Game.objects.all()
+		# own =  Transaction.objects.filter(buyer=request.user, state='Confirmed')
+		for i in range(0, len(allgames)):
+			if ( Transaction.objects.filter(buyer=request.user, game=i, state='Confirmed')):
+			
+				own_games[str(allgames[i].id)]={
+					'own_games':
+					{
+					'id':str(allgames[i].id),
+					'title':allgames[i].game_title,
+					'description': allgames[i].description,
+					'bought':str(allgames[i].times_bought),
+					'url':allgames[i].game_url,
+					'picurl':allgames[i].picture_url,
+					'price':str(allgames[i].price),
+					},
+				}
+		#Adding all of the games data (i.e title...) that user in developer into dictionary
+		for x in range(0,len(pelit)):
+			data[str(pelit[x].id)]={
+				'data':
+				{
+				'id':str(pelit[x].id),
+				'title':pelit[x].game_title,
+				'description': pelit[x].description,
+				'bought':str(pelit[x].times_bought),
+				'url':pelit[x].game_url,
+				'picurl':pelit[x].picture_url,
+				'price':str(pelit[x].price),
+				
+				},
+				}
 
-        
-                
+		
+				
 
-        return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
-    else:
-        return Http404
+		return render(request,"webshop/your_games.html",{'data': data, 'own_games':own_games})
+	else:
+		return Http404
 	
 def remove_game(request,value):
 	
@@ -263,11 +266,17 @@ def remove_game(request,value):
 	'''	
 
 	
-def game(request,value):
+def game(request, value):
 	
 	## Note to self: Using Pk as a game value sounds like a bad idea.
-    own = Game.objects.filter(developer=request.user).exists()
-    if request.user.is_authenticated and own:
+
+	try:
+		owner = Game.objects.get(pk=value).developer
+	except(Game.DoesNotExist):
+		return chandler404
+	test = owner == request.user
+	if request.user.is_authenticated and test:
+		
 		with connection.cursor() as cs:	
 			cs.execute("SELECT * FROM webshop_game WHERE developer_id=="+str(request.user.pk))
 			games={'data': cs.fetchall()}
@@ -294,6 +303,7 @@ def game(request,value):
 					peli.picture_url = request.POST['picture_url']
 					peli.save()
 					return redirect('/webshop/your_games')
+				else: return render(request('webshop/game<int:value>'))
 				
 			
 			context = {
@@ -302,8 +312,8 @@ def game(request,value):
 				}	
 			return render(request, "webshop/game.html",context)	
 		else:
-			return Http404  
-    return Http404
+			return render(request, "webshop/notyourgame.html")
+	return render(request, "webshop/notyourgame.html")
 	
 ##Custom 404 page	
 def chandler404(request,exception,template='webshop/404.html'):
@@ -313,48 +323,48 @@ def chandler404(request,exception,template='webshop/404.html'):
 
 # Updating a user's status by adding them to the Group 'Developers'
 def update_dev(request):
-    my_group, created = Group.objects.get_or_create(name='Developers') 
-    my_group.user_set.add(request.user)
-    return redirect('profile')
+	my_group, created = Group.objects.get_or_create(name='Developers') 
+	my_group.user_set.add(request.user)
+	return redirect('profile')
 
 # Handling the request to edit a user's personal information sent through an EditProfileForm
 def edit_profile(request):
-    if request.user.is_authenticated:
-        user = request.user
-        form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
-        if request.method == 'POST':
-            if form.is_valid():
-                user.first_name = request.POST['first_name']
-                user.last_name = request.POST['last_name']
-                user.email = request.POST['email']
-                user.save()
-                return redirect('profile')
-        context = {
-        "form": form
-        }
-        return render(request, 'webshop/edit_profile.html', context)
-    else:
-        return redirect('index')
+	if request.user.is_authenticated:
+		user = request.user
+		form = EditProfileForm(request.POST or None, initial={'first_name':user.first_name, 'last_name':user.last_name, 'email':user.email})
+		if request.method == 'POST':
+			if form.is_valid():
+				user.first_name = request.POST['first_name']
+				user.last_name = request.POST['last_name']
+				user.email = request.POST['email']
+				user.save()
+				return redirect('profile')
+		context = {
+		"form": form
+		}
+		return render(request, 'webshop/edit_profile.html', context)
+	else:
+		return redirect('index')
 
 
 # A secure way of sending the registered emails
 def send_email(request, user_email, subject, message):
-    try:
-        # No way to do header injections
-        subject = request.POST.get('subject', subject)
-        message = request.POST.get('message', message)
-        from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
-        if subject and message and from_email:
-            try:
-                send_mail(subject, message, from_email, [user_email])
-            except BadHeaderError:
-                return HttpResponse('Invalid header found.')
-            return redirect('index')
-        else:
-            return HttpResponse('Make sure all fields are entered and valid.')
-    except UserProfile.DoesNotExist:
-        raise Http404("User does not exist")
-    
+	try:
+		# No way to do header injections
+		subject = request.POST.get('subject', subject)
+		message = request.POST.get('message', message)
+		from_email = request.POST.get('from_email', 'noreply@kuubatiimi.com')
+		if subject and message and from_email:
+			try:
+				send_mail(subject, message, from_email, [user_email])
+			except BadHeaderError:
+				return HttpResponse('Invalid header found.')
+			return redirect('index')
+		else:
+			return HttpResponse('Make sure all fields are entered and valid.')
+	except UserProfile.DoesNotExist:
+		raise Http404("User does not exist")
+	
 
 # The activation link for the confirmation email
 def activate(request, uidb64, token):
@@ -378,15 +388,15 @@ def activate(request, uidb64, token):
 @login_required
 @transaction.atomic()
 def payment(request, game_id):
-    # This code executes inside a transaction.
-    user = request.user.id
-    buyer = get_object_or_404(User, pk=user)
-    game = get_object_or_404(Game, pk=game_id)
-    amount = game.price
+	# This code executes inside a transaction.
+	user = request.user.id
+	buyer = get_object_or_404(User, pk=user)
+	game = get_object_or_404(Game, pk=game_id)
+	amount = game.price
 
-    pid = str(uuid4()) # Generate this everytime
-    sid = "tb6AYmthc3Blcg==" #Constant 
-    secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
+	pid = str(uuid4()) # Generate this everytime
+	sid = "tb6AYmthc3Blcg==" #Constant 
+	secret = "hzTsouE5tl3Zrp7CvofAtMnxLEEA" #Constant
  
     # Regular check if it's owned already the game and if it's their own game
     owned = Transaction.objects.filter(buyer=buyer, game=game, state='Confirmed').exists()
@@ -435,13 +445,13 @@ def error(request):
 
 # Rendering the cacncel page and setting the database state
 def cancel(request):
-    pid = request.GET['pid']
-    data = get_object_or_404(Transaction, pid=pid)
-    if data.state == 'Pending':
-        data.state ='Rejected'
-        data.save()
-        return render(request, 'payment/cancel.html')
-    return render(request, 'payment/cancel.html')
+	pid = request.GET['pid']
+	data = get_object_or_404(Transaction, pid=pid)
+	if data.state == 'Pending':
+		data.state ='Rejected'
+		data.save()
+		return render(request, 'payment/cancel.html')
+	return render(request, 'payment/cancel.html')
 
 
 def success(request):
