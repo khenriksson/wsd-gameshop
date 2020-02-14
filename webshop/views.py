@@ -227,20 +227,22 @@ def your_games(request):
 					},
 				}
 		#Adding all of the games data (i.e title...) that user in developer into dictionary
-		for x in range(0,len(devgames)):
-			data[str(devgames[x].id)]={
-				'data':
-				{
-				'id':str(devgames[x].id),
-				'title':devgames[x].game_title,
-				'description': devgames[x].description,
-				'bought':str(devgames[x].times_bought),
-				'url':devgames[x].game_url,
-				'picurl':devgames[x].picture_url,
-				'price':str(devgames[x].price),
-				
-				},
-				}
+				for x in range(0,len(devgames)):
+					earned = devgames[x].times_bought * devgames[x].price
+					data[str(devgames[x].id)]={
+						'data':
+						{
+						'id':str(devgames[x].id),
+						'title':devgames[x].game_title,
+						'description': devgames[x].description,
+						'bought':str(devgames[x].times_bought),
+						'url':devgames[x].game_url,
+						'picurl':devgames[x].picture_url,
+						'price':str(devgames[x].price),
+						'earned': str(earned),
+						},
+						}
+
 
 		
 				

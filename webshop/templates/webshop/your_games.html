@@ -32,6 +32,7 @@
       <th scope="col">Price:</th>
       <th scope="col">Bought:</th>
       <th scope="col">Modify the game:</th>
+      <th scope="col">Earned:</th>
       
     </tr>
   </thead>
@@ -39,12 +40,13 @@
     {%for key,value in data.items%} {%for k, val in value.items%}
     <tr>
       <th>{{val.title}}</th>
-      <td>{{val.price}}</td>
+      <td>{{val.price}} €</td>
       <td>{{val.bought}}</td>
       <td>
         <a href="/webshop/game{{val.id}}">Modify {{val.title}}</a>
       </td>
     </tr>
+    <td>{{val.earned}} €</td>
 
     {%endfor%} {%endfor%} {%endif%}
   </tbody>
